@@ -11,13 +11,18 @@ lazy val paradiseVersion      = "2.1.1"
 inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
   addCompilerPlugin("org.spire-math" %% "kind-projector" % kindProjectorVersion),
-  scalaVersion := "2.12.8"
+  scalaVersion := "2.12.8",
 ) ++ gspPublishSettings)
 
 lazy val schema = project
   .in(file("modules/schema"))
   .settings(
-    name := "gsp-core"
+    name := "gsp-core",
+    flywayUrl  := "jdbc:postgresql:gsp",
+    flywayUser := "postgres",
+    flywayLocations := Seq(
+      s"filesystem:${baseDirectory.value}/src/main/resources/db/migration"
+    )
   )
 
 lazy val gen = project
@@ -51,3 +56,14 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
   .jsSettings(gspScalaJsSettings: _*)
 
+lazy val db = project
+  .in(file("modules/db"))
+  .dependsOn(model.jvm % "compile->compile;test->test")
+  .settings(
+    name := "gsp-core-db",
+    libraryDependencies ++= Seq(
+      "org.tpolecat" %% "doobie-postgres" % doobieVersion,
+      "org.tpolecat" %% "doobie-scalatest" % doobieVersion % "test"
+    )
+  )
+  .enablePlugins(AutomateHeaderPlugin)
