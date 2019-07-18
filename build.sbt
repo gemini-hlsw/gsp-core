@@ -43,13 +43,11 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "gsp-core-model",
     libraryDependencies ++= Seq(
-      "co.fs2"     %% "fs2-core"         % fs2Version,
-      "edu.gemini" %% "gsp-math"         % gspMathVersion,
-      "edu.gemini" %% "gsp-math-testkit" % gspMathVersion % "test",
-      "com.github.julien-truffaut" %%% "monocle-core"   % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-macro"  % monocleVersion,
-        // "com.github.julien-truffaut" %%% "monocle-unsafe" % LibraryVersions.monocleVersion,
-        // "com.github.julien-truffaut" %%% "monocle-law"    % LibraryVersions.monocleVersion % "test"))
+      "co.fs2"                     %%% "fs2-core"         % fs2Version,
+      "edu.gemini"                 %%% "gsp-math"         % gspMathVersion,
+      "edu.gemini"                 %%% "gsp-math-testkit" % gspMathVersion % "test",
+      "com.github.julien-truffaut" %%% "monocle-core"     % monocleVersion,
+      "com.github.julien-truffaut" %%% "monocle-macro"    % monocleVersion,
       ),
       addCompilerPlugin("org.scalamacros" %% "paradise" % paradiseVersion cross CrossVersion.patch),
   )
