@@ -11,8 +11,10 @@ lazy val paradiseVersion      = "2.1.1"
 inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
   addCompilerPlugin("org.spire-math" %% "kind-projector" % kindProjectorVersion),
-  scalaVersion := "2.12.8",
 ) ++ gspPublishSettings)
+
+addCommandAlias("genEnums", "; gen/runMain gem.sql.Main modules/model/shared/src/main/scala/gem/enum; headerCreate")
+addCommandAlias("rebuildEnums", "; schema/flywayClean; schema/flywayMigrate; genEnums; modelJVM/compile")
 
 lazy val schema = project
   .in(file("modules/schema"))
