@@ -13,7 +13,7 @@ inThisBuild(Seq(
   addCompilerPlugin("org.spire-math" %% "kind-projector" % kindProjectorVersion),
 ) ++ gspPublishSettings)
 
-addCommandAlias("genEnums", "; gen/runMain gem.sql.Main modules/model/shared/src/main/scala/gem/enum; headerCreate")
+addCommandAlias("genEnums", "; gen/runMain gsp.core.gen.Main modules/model/shared/src/main/scala/gem/enum; headerCreate")
 addCommandAlias("rebuildEnums", "; schema/flywayClean; schema/flywayMigrate; genEnums; modelJVM/compile")
 
 lazy val schema = project
