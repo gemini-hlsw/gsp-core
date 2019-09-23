@@ -28,7 +28,7 @@ object DatabaseConfiguration {
    * user `postgres`, with no password.
    */
   val forTesting: DatabaseConfiguration = {
-    val url = sys.props.getOrElse("ocs3.databaseUrl", "jdbc:postgresql:gsp")
+    val url = sys.props.getOrElse("ocs3.databaseUrl", "jdbc:postgresql:gem")
     apply("org.postgresql.Driver", url, "postgres", "")
   }
 

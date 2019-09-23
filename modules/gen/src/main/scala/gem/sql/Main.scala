@@ -1,10 +1,10 @@
 // Copyright (c) 2016-2019 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gsp.core.gen
+package gem.sql
 
 import doobie._, doobie.implicits._
-import gsp.core.gen.enum._
+import gem.sql.enum._
 import java.nio.file._
 import cats.implicits._, cats.effect.{ IO, ContextShift }
 
@@ -16,7 +16,7 @@ object Main {
   val xa: Transactor[IO] =
     Transactor.fromDriverManager[IO](
       "org.postgresql.Driver",
-      sys.props.getOrElse("ocs3.databaseUrl", "jdbc:postgresql:gsp"),
+      sys.props.getOrElse("ocs3.databaseUrl", "jdbc:postgresql:gem"),
       "postgres",
       ""
     )

@@ -1,7 +1,7 @@
 // Copyright (c) 2016-2019 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gsp.core.gen
+package gem.sql
 
 import doobie._
 import java.time.ZoneId
@@ -18,7 +18,7 @@ object EnumDef {
   import Angle._
   import EnumRefs._
 
-  protected[gen] object ToImport extends Poly1 {
+  protected[sql] object ToImport extends Poly1 {
     // scalastyle:off method.type
     implicit def caseString[S] = at[(S, String)] { _ => Option.empty[String] }
     implicit def caseInt[S] = at[(S, Int)] { _ => Option.empty[String] }
@@ -50,7 +50,7 @@ object EnumDef {
     // scalastyle:on method.type
   }
 
-  protected[gen] object ToDeclaration extends Poly1 {
+  protected[sql] object ToDeclaration extends Poly1 {
     // scalastyle:off method.type
     implicit def caseString  [S <: Symbol] = at[(S, String)  ] { case (s, _) => "  val " + s.name + ": String" }
     implicit def caseInt     [S <: Symbol] = at[(S, Int)     ] { case (s, _) => "  val " + s.name + ": Int" }
@@ -89,7 +89,7 @@ object EnumDef {
     // scalastyle:on method.type
   }
 
-  protected[gen] object ToLiteral extends Poly1 {
+  protected[sql] object ToLiteral extends Poly1 {
     implicit val caseString       = at[String     ](a => "\"" + a + "\"")
     implicit val caseInt          = at[Int        ](a => a.toString)
     implicit val caseBoolean      = at[Boolean    ](a => a.toString)

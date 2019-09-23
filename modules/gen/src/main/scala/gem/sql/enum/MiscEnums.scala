@@ -1,14 +1,14 @@
 // Copyright (c) 2016-2019 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gsp.core.gen
+package gem.sql
 package enum
 
 import doobie._
 import doobie.implicits._
 import java.time.ZoneId
 
-import gsp.core.gen.EnumDef
+import gem.sql.EnumDef
 import shapeless.record._
 import shapeless.Witness
 
@@ -108,6 +108,15 @@ object MiscEnums {
         type B = b.T
         type R = Record.`'tag -> String, 'instrument -> EnumRef[A], 'statusType -> EnumRef[B], 'statusItem -> String, 'applyItem -> String`.T
         val ret = sql"SELECT concat(instrument_id, id), concat(instrument_id, id) tag, instrument_id, type, status_item, apply_item FROM e_giapi_status_apply".query[(String, R)]
+        (ret, a.value: A, b.value: B)._1 // suppress unused warnigs
+      },
+
+      EnumDef.fromQuery("GiapiStatus", "Giapi Status") {
+        val (a, b) = (Witness('Instrument), Witness('GiapiType))
+        type A = a.T
+        type B = b.T
+        type R = Record.`'tag -> String, 'instrument -> EnumRef[A], 'statusType -> EnumRef[B], 'statusItem -> String`.T
+        val ret = sql"SELECT concat(instrument_id, id), concat(instrument_id, id) tag, instrument_id, type, status_item FROM e_giapi_status".query[(String, R)]
         (ret, a.value: A, b.value: B)._1 // suppress unused warnigs
       }
     )
