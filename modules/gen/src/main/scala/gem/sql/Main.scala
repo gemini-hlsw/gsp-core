@@ -16,7 +16,7 @@ object Main {
   val xa: Transactor[IO] =
     Transactor.fromDriverManager[IO](
       "org.postgresql.Driver",
-      sys.props.getOrElse("ocs3.databaseUrl", "jdbc:postgresql:gsp"),
+      sys.props.getOrElse("ocs3.databaseUrl", "jdbc:postgresql:gem"),
       "postgres",
       ""
     )

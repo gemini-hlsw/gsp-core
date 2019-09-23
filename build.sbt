@@ -3,14 +3,17 @@ import sbtcrossproject.CrossType
 
 lazy val doobieVersion        = "0.6.0"
 lazy val fs2Version           = "1.0.5"
-lazy val gspMathVersion       = "0.1.1"
-lazy val kindProjectorVersion = "0.9.10"
-lazy val monocleVersion       = "1.5.1-cats"
+lazy val geminiLocalesVersion = "0.1.0-2019a"
+lazy val gspMathVersion       = "0.1.6"
+lazy val kindProjectorVersion = "0.10.3"
+lazy val monocleVersion       = "2.0.0"
 lazy val paradiseVersion      = "2.1.1"
 
 inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
-  addCompilerPlugin("org.spire-math" %% "kind-projector" % kindProjectorVersion),
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % kindProjectorVersion),
+  resolvers += "Gemini Repository" at "https://github.com/gemini-hlsw/maven-repo/raw/master/releases", // for gemini-locales
+  crossScalaVersions := Seq(scalaVersion.value) // for now, until we get doobie/fs2 upgraded
 ) ++ gspPublishSettings)
 
 addCommandAlias("genEnums", "; gen/runMain gem.sql.Main modules/model/shared/src/main/scala/gem/enum; headerCreate")
@@ -50,11 +53,14 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
       "edu.gemini"                 %%% "gsp-math-testkit" % gspMathVersion % "test",
       "com.github.julien-truffaut" %%% "monocle-core"     % monocleVersion,
       "com.github.julien-truffaut" %%% "monocle-macro"    % monocleVersion,
-      ),
-      addCompilerPlugin("org.scalamacros" %% "paradise" % paradiseVersion cross CrossVersion.patch),
+    ),
+    addCompilerPlugin("org.scalamacros" %% "paradise" % paradiseVersion cross CrossVersion.patch),
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
   .jsSettings(gspScalaJsSettings: _*)
+  .jsSettings(
+    libraryDependencies += "edu.gemini" %%% "gemini-locales" % geminiLocalesVersion
+  )
 
 lazy val db = project
   .in(file("modules/db"))
@@ -62,8 +68,9 @@ lazy val db = project
   .settings(
     name := "gsp-core-db",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-      "org.tpolecat" %% "doobie-scalatest" % doobieVersion % "test"
-    )
+      "org.tpolecat" %% "doobie-postgres"  % doobieVersion,
+      "org.tpolecat" %% "doobie-scalatest" % doobieVersion  % "test"
+    ),
+    Test / parallelExecution := false
   )
   .enablePlugins(AutomateHeaderPlugin)
