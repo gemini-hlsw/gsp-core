@@ -6,6 +6,10 @@ jdk:
 before_install:
   - git fetch --tags
 
+before_script:
+  - sudo service postgresql stop # it's on by default
+  - docker-compose up -d
+
 stages:
   - name: test
   - name: release

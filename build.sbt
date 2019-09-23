@@ -68,8 +68,9 @@ lazy val db = project
   .settings(
     name := "gsp-core-db",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-      "org.tpolecat" %% "doobie-scalatest" % doobieVersion % "test"
-    )
+      "org.tpolecat" %% "doobie-postgres"  % doobieVersion,
+      "org.tpolecat" %% "doobie-scalatest" % doobieVersion  % "test"
+    ),
+    Test / parallelExecution := false
   )
   .enablePlugins(AutomateHeaderPlugin)
