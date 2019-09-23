@@ -8,9 +8,9 @@ Core schema and data model for GSP.
 | `gsp-core-testkit` | GSP core laws and arbitraries. |
 | `gsp-core-db`      | GSP core data access objects.  |
 
-Most downstream libraries and applications will only require `gsp-core-model`. The observing database application will also require `gsp-core-dao`.
+Most downstream libraries and applications will only require `gsp-core-model` and possibly `gsp-core-testkit`. The observing database will also require `gsp-core-db`. The model and schema are defined and released together in order to guarantee consistency between lookup tables and enumerated types (which are generated from the schema).
 
-### Setting Up a Local Database
+## Setting Up a Local Database
 
 In order to build and run tests you will need a Postgres database running locally. The recommended way to do this is via the included `docker-compose` file. In the project root run:
 
@@ -25,18 +25,18 @@ This will start a new, empty Postgres database in a Docker container configured 
 | Port      | `5432`     | This is the standard port. |
 | Database  | `gsp`      |                            |
 | User      | `postgres` |                            |
-| Password  | «none»     |                            |
+| Password  | (none)     |                            |
 
 If you have `psql` installed locally you can connect to the database thus:
 
 ```
-psql -h localhost -U user -d gsp
+psql -h localhost -U postgres -d gsp
 ```
 
 Otherwise you can run it in a container:
 
 ```
-docker-compose exec db psql -U user -d gsp
+docker-compose exec db psql -U postgres -d gsp
 ```
 
 To stop and delete the database:
@@ -52,6 +52,7 @@ To apply all unapplied migrations (for an empty database this means all of them)
 ```
 sbt flywayMigrate
 ```
+
 
 
 
