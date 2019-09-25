@@ -16,6 +16,9 @@ inThisBuild(Seq(
   crossScalaVersions := Seq(scalaVersion.value) // for now, until we get doobie/fs2 upgraded
 ) ++ gspPublishSettings)
 
+// don't publish an artifact for the [empty] root project
+skip in publish := true
+
 addCommandAlias("genEnums", "; gen/runMain gem.sql.Main modules/model/shared/src/main/scala/gem/enum; headerCreate")
 addCommandAlias("rebuildEnums", "; schema/flywayClean; schema/flywayMigrate; genEnums; modelJVM/compile")
 
@@ -48,11 +51,10 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "gsp-core-model",
     libraryDependencies ++= Seq(
-      "co.fs2"                     %%% "fs2-core"         % fs2Version,
-      "edu.gemini"                 %%% "gsp-math"         % gspMathVersion,
-      "edu.gemini"                 %%% "gsp-math-testkit" % gspMathVersion % "test",
-      "com.github.julien-truffaut" %%% "monocle-core"     % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-macro"    % monocleVersion,
+      "co.fs2"                     %%% "fs2-core"      % fs2Version,
+      "edu.gemini"                 %%% "gsp-math"      % gspMathVersion,
+      "com.github.julien-truffaut" %%% "monocle-core"  % monocleVersion,
+      "com.github.julien-truffaut" %%% "monocle-macro" % monocleVersion,
     ),
     addCompilerPlugin("org.scalamacros" %% "paradise" % paradiseVersion cross CrossVersion.patch),
   )
@@ -62,9 +64,36 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
     libraryDependencies += "edu.gemini" %%% "gemini-locales" % geminiLocalesVersion
   )
 
+lazy val testkit = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Full)
+  .in(file("modules/testkit"))
+  .dependsOn(model)
+  .settings(
+    name := "gsp-core-testkit",
+    libraryDependencies ++= Seq(
+      "edu.gemini" %%% "gsp-math-testkit" % gspMathVersion
+    )
+  )
+  .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
+  .jsSettings(gspScalaJsSettings: _*)
+
+lazy val model_tests = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Full)
+  .in(file("modules/model-tests"))
+  .dependsOn(model)
+  .dependsOn(testkit)
+  .settings(
+    skip in publish := true,
+    name := "gsp-core-model-tests",
+  )
+  .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
+  .jsSettings(gspScalaJsSettings: _*)
+
 lazy val db = project
   .in(file("modules/db"))
-  .dependsOn(model.jvm % "compile->compile;test->test")
+  .dependsOn(schema)
+  .dependsOn(model.jvm)
+  .dependsOn(testkit.jvm)
   .settings(
     name := "gsp-core-db",
     libraryDependencies ++= Seq(
