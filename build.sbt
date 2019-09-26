@@ -13,8 +13,15 @@ inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
   addCompilerPlugin("org.typelevel" %% "kind-projector" % kindProjectorVersion),
   resolvers += "Gemini Repository" at "https://github.com/gemini-hlsw/maven-repo/raw/master/releases", // for gemini-locales
-  crossScalaVersions := Seq(scalaVersion.value) // for now, until we get doobie/fs2 upgraded
+  crossScalaVersions := Seq(scalaVersion.value), // for now, until we get doobie/fs2 upgraded
 ) ++ gspPublishSettings)
+
+// doesn't work to do this `inThisBuild`
+lazy val commonSettings = Seq(
+  Compile / doc / scalacOptions --= Seq(
+    "-Xfatal-warnings"
+  )
+)
 
 // don't publish an artifact for the [empty] root project
 skip in publish := true
@@ -24,6 +31,7 @@ addCommandAlias("rebuildEnums", "; schema/flywayClean; schema/flywayMigrate; gen
 
 lazy val schema = project
   .in(file("modules/schema"))
+  .settings(commonSettings)
   .settings(
     name := "gsp-core",
     flywayUrl  := "jdbc:postgresql:gsp",
@@ -35,6 +43,7 @@ lazy val schema = project
 
 lazy val gen = project
   .in(file("modules/gen"))
+  .settings(commonSettings)
   .dependsOn(schema)
   .settings(
     name := "gsp-core-gen",
@@ -48,6 +57,7 @@ lazy val gen = project
 lazy val model = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
   .in(file("modules/model"))
+  .settings(commonSettings)
   .settings(
     name := "gsp-core-model",
     libraryDependencies ++= Seq(
@@ -67,6 +77,7 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
 lazy val testkit = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
   .in(file("modules/testkit"))
+  .settings(commonSettings)
   .dependsOn(model)
   .settings(
     name := "gsp-core-testkit",
@@ -80,6 +91,7 @@ lazy val testkit = crossProject(JVMPlatform, JSPlatform)
 lazy val model_tests = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
   .in(file("modules/model-tests"))
+  .settings(commonSettings)
   .dependsOn(model)
   .dependsOn(testkit)
   .settings(
@@ -91,6 +103,7 @@ lazy val model_tests = crossProject(JVMPlatform, JSPlatform)
 
 lazy val db = project
   .in(file("modules/db"))
+  .settings(commonSettings)
   .dependsOn(schema)
   .dependsOn(model.jvm)
   .dependsOn(testkit.jvm)
