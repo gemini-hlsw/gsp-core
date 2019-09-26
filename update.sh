@@ -32,11 +32,13 @@ echo 🔶  Setting up 'testkit'
 rm -r modules/testkit/*
 mkdir -p modules/testkit/shared/src/main/scala/gem
 cp -r ../ocs3/modules/core/shared/src/test/scala/gem/arb modules/testkit/shared/src/main/scala/gem/
+cp -r ../ocs3/modules/core/shared/src/test/scala/gem/test modules/testkit/shared/src/main/scala/gem/
 
 echo 🔶  Setting up 'model-tests'
 rm -r modules/model-tests/*
 mkdir -p modules/model-tests/shared/src
 cp -r ../ocs3/modules/core/shared/src/test modules/model-tests/shared/src/
 rm -r modules/model-tests/shared/src/test/scala/gem/arb
+rm -r modules/model-tests/shared/src/test/scala/gem/test
 
 
