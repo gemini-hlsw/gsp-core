@@ -45,7 +45,14 @@ To stop and delete the database:
 docker-compose down
 ```
 
+## Generating Enumerated Types
 
+There are many enumerated types in the database, represented by tables named `e_whatever`. The Scala equivalents are generated *on demand* by queries, then checked into source control like normal source files. This is only needed if you update the contents of an enum in the schema, or add/modify a the generation
+code in the `gen` project. In any case, you can [re]-generate the enumerated types thus:
 
+```
+sbt genEnums
+```
 
+The source files appear in `modules/model/shared/src/main/scala/gem/enum`.
 
