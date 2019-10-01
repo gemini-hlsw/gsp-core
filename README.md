@@ -18,25 +18,25 @@ In order to build and run tests you will need a Postgres database running locall
 docker-compose up -d
 ```
 
-This will start a new, empty Postgres database in a Docker container configured as follows.
+This will start a new Postgres database initialized with Schema defined in the `schema` project, configured as follows.
 
 | Parameter | Value      | Notes                      |
 |-----------|------------|----------------------------|
 | Port      | `5432`     | This is the standard port. |
-| Database  | `gsp`      |                            |
+| Database  | `gem`      |                            |
 | User      | `postgres` |                            |
 | Password  | (none)     |                            |
 
 If you have `psql` installed locally you can connect to the database thus:
 
 ```
-psql -h localhost -U postgres -d gsp
+psql -h localhost -U postgres -d gem
 ```
 
 Otherwise you can run it in a container:
 
 ```
-docker-compose exec db psql -U postgres -d gsp
+docker-compose exec db psql -U postgres -d gem
 ```
 
 To stop and delete the database:
@@ -44,15 +44,6 @@ To stop and delete the database:
 ```
 docker-compose down
 ```
-
-## Initializing/Updating the Database
-
-To apply all unapplied migrations (for an empty database this means all of them) in order, do:
-
-```
-sbt flywayMigrate
-```
-
 
 
 
