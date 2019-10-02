@@ -33,7 +33,8 @@ lazy val schema = project
   .in(file("modules/schema"))
   .settings(commonSettings)
   .settings(
-    name := "gsp-core",
+    name := "gsp-core-schema",
+    skip in publish := true,
     flywayUrl  := "jdbc:postgresql:gsp",
     flywayUser := "postgres",
     flywayLocations := Seq(
