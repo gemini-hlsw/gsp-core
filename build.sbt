@@ -31,11 +31,12 @@ addCommandAlias("rebuildEnums", "; schema/flywayClean; schema/flywayMigrate; gen
 
 lazy val schema = project
   .in(file("modules/schema"))
+  .enablePlugins(FlywayPlugin)
   .settings(commonSettings)
   .settings(
     name := "gsp-core-schema",
     skip in publish := true,
-    flywayUrl  := "jdbc:postgresql:gsp",
+    flywayUrl  := "jdbc:postgresql:gem",
     flywayUser := "postgres",
     flywayLocations := Seq(
       s"filesystem:${baseDirectory.value}/src/main/resources/db/migration"

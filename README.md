@@ -12,13 +12,17 @@ Most downstream libraries and applications will only require `gsp-core-model` an
 
 ## Setting Up a Local Database
 
-In order to build and run tests you will need a Postgres database running locally. The recommended way to do this is via the included `docker-compose` file. In the project root run:
+In order to build and run tests you will need a Postgres database running locally. There are two ways to do this.
+
+### Option 1: Postgres in Docker
+
+This option is what's used in CI and is what you want if you're ok starting over with an empty database when things change. It does not require you to install or administer your own Postgres instance. Make sure you have [Docker](https://www.docker.com) installed, then you can use the included `docker-compose` file. In the project root run:
 
 ```
 docker-compose up -d
 ```
 
-This will start a new Postgres database initialized with Schema defined in the `schema` project, configured as follows.
+This will start a new Postgres database initialized with the schema defined in the `schema` project, configured as follows.
 
 | Parameter | Value      | Notes                      |
 |-----------|------------|----------------------------|
@@ -44,6 +48,43 @@ To stop and delete the database:
 ```
 docker-compose down
 ```
+
+### Option 2: Local Postgres Installation with Flyway
+
+If you want to maintain a database full of data and peform migrations instead of starting with a fresh database every time, this option is probably what you want. Install [Postgres.app](https://postgresapp.com) and add its binaries to your path, something along the lines of
+
+```
+export PATH=$PATH:/Applications/Postgres.app/Contents/Versions/latest/bin
+```
+
+Next you can run the following to create the `postgres` user and `gem` database.
+
+```
+psql -c 'create user postgres createdb'
+psql -c 'create database gem' -U postgres
+```
+
+Initialize the database by running the migration scripts.
+
+```
+sbt sql/flywayMigrate
+```
+
+If you ever want to wipe out the database and start over, you can do
+
+```
+psql -c 'drop database gem' -U postgres
+```
+
+And then redo the steps above starting from `create database`.
+
+You can do
+
+```
+psql -U postgres -d gem
+```
+
+to poke around with the database on the commandline.
 
 ## Generating Enumerated Types
 
