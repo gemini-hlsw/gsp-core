@@ -6,7 +6,7 @@ lazy val fs2Version           = "1.0.5"
 lazy val geminiLocalesVersion = "0.1.0-2019a"
 lazy val gspMathVersion       = "0.1.6"
 lazy val kindProjectorVersion = "0.10.3"
-lazy val monocleVersion       = "2.0.0"
+lazy val monocleVersion       = "2.0.1"
 lazy val paradiseVersion      = "2.1.1"
 
 inThisBuild(Seq(
