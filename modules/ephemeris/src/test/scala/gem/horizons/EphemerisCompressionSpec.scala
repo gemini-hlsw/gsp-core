@@ -21,7 +21,6 @@ import fs2.Pipe
 import java.time.{ LocalDate, Month }
 import java.time.temporal.ChronoUnit.MINUTES
 
-@org.scalatest.Ignore
 final class EphemerisCompressionSpec extends CatsSuite with EphemerisTestSupport with RespectIncludeTags {
   import EphemerisCompressionSpec._
 
@@ -42,84 +41,84 @@ final class EphemerisCompressionSpec extends CatsSuite with EphemerisTestSupport
   val Δv: Pipe[IO, Ephemeris.Element, Ephemeris.Element] = standardVelocityCompression
   val ac: Pipe[IO, Ephemeris.Element, Ephemeris.Element] = standardAccelerationCompression
 
-  test("2014 UR Δv compresses to 100% of original size", RequiresNetwork) {
+  ignore("2014 UR Δv compresses to 100% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.SEPTEMBER, 15)
     val end   = LocalDate.of(2015, Month.NOVEMBER,  15)
 
     testCompression("2014 UR Δv", ur_2014, 1.00, start, end, Δv)
   }
 
-  test("2014 UR a compresses to 10.1% of original size", RequiresNetwork) {
+  ignore("2014 UR a compresses to 10.1% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.SEPTEMBER, 15)
     val end   = LocalDate.of(2015, Month.NOVEMBER,  15)
 
     testCompression("2014 UR a", ur_2014, 0.101, start, end, ac)
   }
 
-  test("2015 QT3 Δv compresses to 34% of original size", RequiresNetwork) {
+  ignore("2015 QT3 Δv compresses to 34% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.AUGUST,  1)
     val end   = LocalDate.of(2015, Month.OCTOBER, 1)
 
     testCompression("2015 QT3 Δv", qt3_2015, 0.342, start, end, Δv)
   }
 
-  test("2015 QT3 a compresses to 5.6% of original size", RequiresNetwork) {
+  ignore("2015 QT3 a compresses to 5.6% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.AUGUST,  1)
     val end   = LocalDate.of(2015, Month.OCTOBER, 1)
 
     testCompression("2015 QT3 a", qt3_2015, 0.056, start, end, ac)
   }
 
-  test("Churyumov-Gerasimenko Δv compresses to 4% of original size", RequiresNetwork) {
+  ignore("Churyumov-Gerasimenko Δv compresses to 4% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.DECEMBER, 15)
     val end   = LocalDate.of(2016, Month.FEBRUARY, 15)
 
     testCompression("Churyumov Δv", churyumov, 0.039, start, end, Δv)
   }
 
-  test("Churyumov-Gerasimenko a compresses to 1.2% of original size", RequiresNetwork) {
+  ignore("Churyumov-Gerasimenko a compresses to 1.2% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.DECEMBER, 15)
     val end   = LocalDate.of(2016, Month.FEBRUARY, 15)
 
     testCompression("Churyumov a", churyumov, 0.012, start, end, ac)
   }
 
-  test("Titan Δv compresses to 1% of original size", RequiresNetwork) {
+  ignore("Titan Δv compresses to 1% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.JULY  ,    1)
     val end   = LocalDate.of(2015, Month.SEPTEMBER, 1)
 
     testCompression("Titan Δv", titan, 0.008, start, end, Δv)
   }
 
-  test("Titan a compresses to 0.6% of original size", RequiresNetwork) {
+  ignore("Titan a compresses to 0.6% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.JULY  ,    1)
     val end   = LocalDate.of(2015, Month.SEPTEMBER, 1)
 
     testCompression("Titan a", titan, 0.006, start, end, ac)
   }
 
-  test("Beer Δv compresses to 5% of original size", RequiresNetwork) {
+  ignore("Beer Δv compresses to 5% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.OCTOBER,  1)
     val end   = LocalDate.of(2015, Month.DECEMBER, 1)
 
     testCompression("Beer Δv", beer, 0.046, start, end, Δv)
   }
 
-  test("Beer a compresses to 1.4% of original size", RequiresNetwork) {
+  ignore("Beer a compresses to 1.4% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.OCTOBER,  1)
     val end   = LocalDate.of(2015, Month.DECEMBER, 1)
 
     testCompression("Beer a", beer, 0.014, start, end, ac)
   }
 
-  test("Io Δv compresses to 24% of original size", RequiresNetwork) {
+  ignore("Io Δv compresses to 24% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.MARCH, 1)
     val end   = LocalDate.of(2015, Month.MAY,   1)
 
     testCompression("Io Δv", io, 0.237, start, end, Δv)
   }
 
-  test("Io a compresses to 3.2% of original size", RequiresNetwork) {
+  ignore("Io a compresses to 3.2% of original size", RequiresNetwork) {
     val start = LocalDate.of(2015, Month.MARCH, 1)
     val end   = LocalDate.of(2015, Month.MAY,   1)
 

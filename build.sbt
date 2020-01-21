@@ -157,6 +157,11 @@ lazy val ephemeris = project
   .settings(commonSettings)
   .settings(
     name := "gsp-core-ephemeris",
+    // by default, ignore network tests
+    // to run these:
+    //    sbt:gsp-core-ephemeris> set Test/testOptions := Nil
+    //    sbt:gsp-core-ephemeris> test
+    testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-l", "gem.test.Tags.RequiresNetwork"),
     libraryDependencies ++= Seq(
       "org.http4s"    %% "http4s-async-http-client" % http4sVersion,
       "org.typelevel" %% "mouse"                    % mouseVersion,
