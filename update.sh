@@ -2,6 +2,18 @@
 
 # This re-copies sources from ../ocs3
 
+echo 🔶  Setting up 'ocs2_api'
+rm -r modules/ocs2_api/*
+cp -r ../ocs3/modules/ocs2_api/src modules/ocs2_api/
+
+echo 🔶  Setting up 'ocs2'
+rm -r modules/ocs2/*
+cp -r ../ocs3/modules/ocs2/src modules/ocs2/
+
+echo 🔶  Setting up 'ephemeris'
+rm -r modules/ephemeris/*
+cp -r ../ocs3/modules/ephemeris/src modules/ephemeris/
+
 echo 🔶  Setting up 'db'
 rm -r modules/db/*
 cp -r ../ocs3/modules/db/src modules/db/

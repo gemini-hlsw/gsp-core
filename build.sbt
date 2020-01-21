@@ -8,6 +8,10 @@ lazy val gspMathVersion       = "0.1.10"
 lazy val kindProjectorVersion = "0.10.3"
 lazy val monocleVersion       = "2.0.1"
 lazy val paradiseVersion      = "2.1.1"
+lazy val flywayVersion        = "6.0.4"
+lazy val http4sVersion        = "0.21.0-M6"
+lazy val scalaXmlVerson       = "1.2.0"
+lazy val mouseVersion         = "0.24"
 
 inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
@@ -111,6 +115,7 @@ lazy val db = project
   .dependsOn(testkit.jvm)
   .settings(
     name := "gsp-core-db",
+    skip in publish := true,
     libraryDependencies ++= Seq(
       "org.tpolecat" %% "doobie-postgres"  % doobieVersion,
       "org.tpolecat" %% "doobie-scalatest" % doobieVersion  % "test"
@@ -118,3 +123,47 @@ lazy val db = project
     Test / parallelExecution := false
   )
   .enablePlugins(AutomateHeaderPlugin)
+
+// This is used by seqexec and also by the [unpublished] ocs2 module that's here temporarily.
+lazy val ocs2_api = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("modules/ocs2_api"))
+  .dependsOn(model)
+  .settings(commonSettings)
+  .settings(
+    name := "gsp-core-ocs2-api"
+  )
+
+// This module is here to ensure it stays up to date, but it's unpublished and unused for now.
+lazy val ocs2 = project
+  .in(file("modules/ocs2"))
+  .dependsOn(model.jvm, ocs2_api.jvm, db)
+  .settings(commonSettings)
+  .settings(
+    name := "gsp-core-ocs2",
+    libraryDependencies ++= Seq(
+      "org.flywaydb"            % "flyway-core"              % flywayVersion,
+      "org.http4s"             %% "http4s-dsl"               % http4sVersion,
+      "org.http4s"             %% "http4s-blaze-server"      % http4sVersion,
+      "org.http4s"             %% "http4s-async-http-client" % http4sVersion,
+      "org.http4s"             %% "http4s-scala-xml"         % http4sVersion,
+      "org.scala-lang.modules" %% "scala-xml"                % scalaXmlVerson
+    )
+  )
+
+// This module is here to ensure it stays up to date, but it's unpublished and unused for now.
+lazy val ephemeris = project
+  .in(file("modules/ephemeris"))
+  .dependsOn(model.jvm, testkit.jvm, db)
+  .settings(commonSettings)
+  .settings(
+    name := "gsp-core-ephemeris",
+    libraryDependencies ++= Seq(
+      "org.http4s"    %% "http4s-async-http-client" % http4sVersion,
+      "org.typelevel" %% "mouse"                    % mouseVersion,
+      // GspCoreDb.value,
+      // GspCoreTestkit.value,
+      // Mouse.value,
+      // Fs2IO
+    )
+  )
