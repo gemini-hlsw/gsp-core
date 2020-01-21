@@ -92,7 +92,7 @@ final class HorizonsNameQuerySpec extends CatsSuite with RespectIncludeTags {
     runSearch(Search.MajorBody("covfefe")) shouldEqual Nil.asRight
   }
 
-  ignore("major body search should handle empty results with small-body fallthrough (many)", RequiresNetwork) {
+  test("major body search should handle empty results with small-body fallthrough (many)", RequiresNetwork) {
     runSearch(Search.MajorBody("hu")) shouldEqual Nil.asRight
   }
 
