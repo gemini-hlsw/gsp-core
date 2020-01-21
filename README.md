@@ -2,13 +2,13 @@
 
 Core schema and data model for GSP.
 
-| Artifact           | Description                    |
-|--------------------|--------------------------------|
-| `gsp-core-model`   | GSP core data model.           |
-| `gsp-core-testkit` | GSP core laws and arbitraries. |
-| `gsp-core-db`      | GSP core data access objects.  |
+| Artifact            | Platform(s)         | Description                               |
+|---------------------|-------------------- |-------------------------------------------|
+| `gsp-core-model`    | JVM+JS, Scala 2.12  | GSP core data model.                      |
+| `gsp-core-testkit`  | JVM+JS, Scala 2.12  | GSP core laws and arbitraries.            |
+| `gsp-core-ocs2-api` | JVM+JS, Scala 2.12  | OCS2 PIO parsers for GSP core data model. |
 
-Most downstream libraries and applications will only require `gsp-core-model` and possibly `gsp-core-testkit`. The observing database will also require `gsp-core-db`. The model and schema are defined and released together in order to guarantee consistency between lookup tables and enumerated types (which are generated from the schema).
+In addition, this library builds and tests (but does not publish) core database bindings, epheris parsing, and OCS2 program import functionality. These modules will be moved into application projects as GSP progresses.
 
 ## Setting Up a Local Database
 

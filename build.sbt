@@ -124,7 +124,6 @@ lazy val db = project
   )
   .enablePlugins(AutomateHeaderPlugin)
 
-// This is used by seqexec and also by the [unpublished] ocs2 module that's here temporarily.
 lazy val ocs2_api = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/ocs2_api"))
