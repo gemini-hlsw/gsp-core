@@ -2,7 +2,7 @@ import sbtcrossproject.crossProject
 import sbtcrossproject.CrossType
 
 lazy val doobieVersion        = "0.6.0"
-lazy val fs2Version           = "1.0.5"
+lazy val fs2Version           = "2.2.1"
 lazy val geminiLocalesVersion = "0.1.0-2019a"
 lazy val gspMathVersion       = "0.1.6"
 lazy val kindProjectorVersion = "0.10.3"
