@@ -69,14 +69,14 @@ object UserTargetDao {
   /** Selects all `UserTarget`s for a program.
     */
   def selectProg(pid: Program.Id): ConnectionIO[Map[Index, TreeSet[UserTarget]]] =
-    selectProgWithId(pid).map(_.mapValues(toUserTargetSet))
+    selectProgWithId(pid).map(_.mapValues(toUserTargetSet).toMap)
 
   /** Selects all `UserTarget`s for a program paired with the `UserTarget` id
     * itself.
     */
   def selectProgWithId(pid: Program.Id): ConnectionIO[Map[Index, List[(UserTarget.Id, UserTarget)]]] =
     selectAll(Statements.selectProg(pid)).map {
-      _.groupBy(_._1).mapValues(_.unzip._2)
+      _.groupBy(_._1).mapValues(_.unzip._2).toMap
     }
 
 

@@ -64,8 +64,6 @@ package object dao {
       EitherConnectionIO.right[A, T](c)
   }
 
-  /** Flattened `a` as a VALUES argument (...). */
-  def values[A](a: A)(implicit ev: Write[A]): Fragment =
-    Fragment(List.fill(ev.length)("?").mkString("(", ", ", ")"), a)
-
+  def values[A](a: A)(implicit w: Write[A]): Fragment =
+    fr"(" ++ Fragments.values(a) ++ fr")"
 }

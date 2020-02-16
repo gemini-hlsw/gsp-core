@@ -23,7 +23,7 @@ import fs2.Stream
 
 
 /** Utility for inserting / updating en ephemeris. */
-final case class HorizonsEphemerisUpdater[M[_]: Monad: LiftIO](xa: Transactor[M]) {
+final case class HorizonsEphemerisUpdater[M[_] : LiftIO](xa: Transactor[M])(implicit bracket: Bracket[M, Throwable]) {
 
   import HorizonsEphemerisUpdater._
 

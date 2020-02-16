@@ -20,7 +20,7 @@ object GpiEnums {
       },
 
       EnumDef.fromQuery("GpiFilter", "GPI Filter") {
-        val  m = Witness('MagnitudeBand)
+        val  m = Witness(Symbol("MagnitudeBand"))
         type M = m.T
         type E = Record.`'tag -> String, 'shortName -> String, 'longName -> String, 'band -> EnumRef[M], 'obsolete -> Boolean`.T
         val ret = sql"""SELECT id, id tag, short_name, long_name, band, obsolete FROM e_gpi_filter""".query[(String, E)]
@@ -88,7 +88,7 @@ object GpiEnums {
       },
 
       EnumDef.fromQuery("GpiObservingMode", "GPI ObservingMode") {
-        val (a, b, c, d, e) = (Witness('GpiFilter), Witness('GpiApodizer), Witness('GpiFPM), Witness('GpiLyot), Witness('GpiObservingMode))
+        val (a, b, c, d, e) = (Witness(Symbol("GpiFilter")), Witness(Symbol("GpiApodizer")), Witness(Symbol("GpiFPM")), Witness(Symbol("GpiLyot")), Witness(Symbol("GpiObservingMode")))
         type A = a.T
         type B = b.T
         type C = c.T

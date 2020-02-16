@@ -6,7 +6,7 @@ package check
 
 import cats.effect.{ IO, ContextShift }
 import doobie.Transactor
-import doobie.scalatest.imports._
+import doobie.scalatest._
 import gem._
 import gem.enum._
 import gem.config._

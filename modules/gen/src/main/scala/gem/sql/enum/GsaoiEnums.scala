@@ -21,8 +21,8 @@ object GsaoiEnums {
       },
 
       EnumDef.fromQuery("GsaoiFilter", "GSAOI Filter") {
-        val  m = Witness('MagnitudeBand)
-        val  r = Witness('GsaoiReadMode)
+        val  m = Witness(Symbol("MagnitudeBand"))
+        val  r = Witness(Symbol("GsaoiReadMode"))
         type M = m.T
         type R = r.T
         type E = Record.`'tag -> String, 'shortName -> String, 'longName -> String, 'wavelength -> Wavelength.Um, 'readMode -> EnumRef[R], 'exposureTime5050 -> FiniteDuration.Seconds, 'exposureTimeHalfWell -> FiniteDuration.Seconds, 'band -> Option[EnumRef[M]]`.T
