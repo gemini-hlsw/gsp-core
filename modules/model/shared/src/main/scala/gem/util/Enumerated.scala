@@ -29,7 +29,7 @@ trait Enumerated[A] extends Order[A] {
 
   // Hashed index lookup, for efficient use as an `Order`.
   private lazy val indexOfTag: Map[String, Int] =
-    all.zipWithIndex.view.map { case (a, n) => (tag(a), n) }.toMap
+    all.zipWithIndex.iterator.map { case (a, n) => (tag(a), n) }.toMap
 
 }
 
