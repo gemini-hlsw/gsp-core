@@ -3,7 +3,7 @@
 
 package gem.ocs2
 
-import cats.effect.{ ContextShift, Effect, IO }
+import cats.effect.{ Bracket, ContextShift, Effect, IO }
 import cats.implicits._
 import doobie._, doobie.implicits._
 import gem.dao.meta._
@@ -24,10 +24,10 @@ trait DoobieClient extends ProgramIdMeta with IndexMeta {
         .foreach(_.setLevel(Level.OFF))
     )
 
-  def ignoreUniqueViolation(fa: ConnectionIO[Int]): ConnectionIO[Int] =
+  def ignoreUniqueViolation(fa: ConnectionIO[Int])(implicit ev: Bracket[ConnectionIO, Throwable]): ConnectionIO[Int] =
     for {
       s <- HC.setSavepoint
-      n <- fa.onUniqueViolation(HC.rollback(s).as(0)) guarantee HC.releaseSavepoint(s)
+      n <- ev.guarantee(fa.onUniqueViolation(HC.rollback(s).as(0)))(HC.releaseSavepoint(s))
     } yield n
 
 }

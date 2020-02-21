@@ -10,6 +10,7 @@ services:
     environment:
       # POSTGRES_USER: user
       # POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_DB: gem
     ports:
       - 5432:5432

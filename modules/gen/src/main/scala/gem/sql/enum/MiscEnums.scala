@@ -103,7 +103,7 @@ object MiscEnums {
       },
 
       EnumDef.fromQuery("GiapiStatusApply", "Giapi Status Apply") {
-        val (a, b) = (Witness('Instrument), Witness('GiapiType))
+        val (a, b) = (Witness(Symbol("Instrument")), Witness(Symbol("GiapiType")))
         type A = a.T
         type B = b.T
         type R = Record.`'tag -> String, 'instrument -> EnumRef[A], 'statusType -> EnumRef[B], 'statusItem -> String, 'applyItem -> String, 'tolerance -> Option[BigDecimal]`.T
@@ -112,7 +112,7 @@ object MiscEnums {
       },
 
       EnumDef.fromQuery("GiapiStatus", "Giapi Status") {
-        val (a, b) = (Witness('Instrument), Witness('GiapiType))
+        val (a, b) = (Witness(Symbol("Instrument")), Witness(Symbol("GiapiType")))
         type A = a.T
         type B = b.T
         type R = Record.`'tag -> String, 'instrument -> EnumRef[A], 'statusType -> EnumRef[B], 'statusItem -> String`.T
