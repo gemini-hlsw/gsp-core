@@ -12,7 +12,7 @@ lazy val flywayVersion           = "6.2.4"
 lazy val http4sVersion           = "0.21.1"
 lazy val scalaXmlVerson          = "1.2.0"
 lazy val mouseVersion            = "0.24"
-lazy val silencerVersion         = "1.4.4"
+lazy val silencerVersion         = "1.6.0"
 
 lazy val paradisePlugin = Def.setting {
   PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
