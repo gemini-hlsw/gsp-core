@@ -16,7 +16,7 @@ lazy val mouseVersion            = "0.24"
 lazy val scala212Version         = "2.12.10"
 lazy val scala213Version         = "2.13.1"
 
-lazy val silencerVersion         = "1.4.4"
+lazy val silencerVersion         = "1.6.0"
 
 lazy val paradisePlugin = Def.setting {
   PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
