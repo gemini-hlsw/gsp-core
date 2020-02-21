@@ -8,14 +8,10 @@ lazy val gspMathVersion          = "0.1.13"
 lazy val kindProjectorVersion    = "0.11.0"
 lazy val monocleVersion          = "2.0.1"
 lazy val paradiseVersion         = "2.1.1"
-lazy val flywayVersion           = "6.2.3"
-lazy val http4sVersion           = "0.21.0"
+lazy val flywayVersion           = "6.2.4"
+lazy val http4sVersion           = "0.21.1"
 lazy val scalaXmlVerson          = "1.2.0"
 lazy val mouseVersion            = "0.24"
-
-lazy val scala212Version         = "2.12.10"
-lazy val scala213Version         = "2.13.1"
-
 lazy val silencerVersion         = "1.4.4"
 
 lazy val paradisePlugin = Def.setting {
@@ -48,7 +44,6 @@ inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
   addCompilerPlugin("org.typelevel" % "kind-projector" % kindProjectorVersion cross CrossVersion.full),
   resolvers += "Gemini Repository" at "https://github.com/gemini-hlsw/maven-repo/raw/master/releases", // for gemini-locales
-  crossScalaVersions := Seq(scala212Version, scala213Version),
   scalacOptions ++= macroAnnotations.value,
 ) ++ gspPublishSettings)
 
