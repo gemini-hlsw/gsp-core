@@ -13,6 +13,23 @@ lazy val http4sVersion        = "0.21.0"
 lazy val scalaXmlVerson       = "1.2.0"
 lazy val mouseVersion         = "0.24"
 
+// A task that waits for Postgres to come up.
+lazy val awaitPostgres = taskKey[Unit]("Waits for Postgres to be available.")
+awaitPostgres := {
+  @annotation.tailrec
+  def go(): Unit = {
+    try java.sql.DriverManager.getConnection("jdbc:postgresql:gem", "postgres", "").close()
+    catch {
+      case e: org.postgresql.util.PSQLException =>
+        println("Awaiting Postgres...")
+        Thread.sleep(2 * 1000)
+        go
+    }
+  }
+  Class.forName("org.postgresql.Driver")
+  go()
+}
+
 inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
   addCompilerPlugin("org.typelevel" %% "kind-projector" % kindProjectorVersion),
