@@ -6,7 +6,7 @@ package gem.util
 import cats._, cats.data._, cats.implicits._
 import scala.BigDecimal.RoundingMode.FLOOR
 import scala.annotation.tailrec
-import scala.collection.breakOut
+import java.math.MathContext
 
 /** A sortable value used to indicate relative positions of a set of associated
   * elements.  `Location`s may be thought of as lists of arbitrary integers
@@ -17,7 +17,6 @@ import scala.collection.breakOut
   * @group Sequence Model
   */
 sealed trait Location extends Product with Serializable {
-
   // These functions aren't of any use to clients.  Instead they are involved
   // in the cacluation of Locations that fall between two other locations.
 
@@ -170,15 +169,17 @@ object Location {
       if (gapSize < BigDecimal.exact(1)) go(len + 1)
       else {
         // This is the existing start position as a BigDecimal.
-        val startBd = BigDecimal(start10, 0)
+        val startBd = BigDecimal(start10, 0, MathContext.UNLIMITED)
 
         // Calculate count digits separated one from the other by gapSized gaps,
         // but rounding down to make them integral. Since gapSize is at least
         // 1.0, this will always advance and never produce duplicates.
         (1 to count)
+          .iterator
           .scanLeft(startBd) { (sum, _) => sum + gapSize }
-          .drop(1)
-          .map { bd => fromBase10(bd.setScale(0, FLOOR).toBigInt) }(breakOut)
+          .drop(1)          
+          .map { bd => fromBase10(bd.setScale(0, FLOOR).toBigInt) }
+          .toList
       }
     }
 

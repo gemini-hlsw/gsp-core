@@ -1,23 +1,55 @@
 import sbtcrossproject.crossProject
 import sbtcrossproject.CrossType
 
-lazy val doobieVersion        = "0.6.0"
-lazy val fs2Version           = "2.2.2"
-lazy val geminiLocalesVersion = "0.2.0"
-lazy val gspMathVersion       = "0.1.10"
-lazy val kindProjectorVersion = "0.10.3"
-lazy val monocleVersion       = "2.0.1"
-lazy val paradiseVersion      = "2.1.1"
-lazy val flywayVersion        = "6.2.4"
-lazy val http4sVersion        = "0.21.0"
-lazy val scalaXmlVerson       = "1.2.0"
-lazy val mouseVersion         = "0.24"
+lazy val doobieVersion           = "0.8.6"
+lazy val fs2Version              = "2.2.2"
+lazy val geminiLocalesVersion    = "0.2.0"
+lazy val gspMathVersion          = "0.1.13"
+lazy val kindProjectorVersion    = "0.11.0"
+lazy val monocleVersion          = "2.0.1"
+lazy val paradiseVersion         = "2.1.1"
+lazy val flywayVersion           = "6.2.3"
+lazy val http4sVersion           = "0.21.0"
+lazy val scalaXmlVerson          = "1.2.0"
+lazy val mouseVersion            = "0.24"
+
+lazy val scala212Version         = "2.12.10"
+lazy val scala213Version         = "2.13.1"
+
+lazy val silencerVersion         = "1.4.4"
+
+lazy val paradisePlugin = Def.setting {
+  PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
+    case Some((2, v)) if v <= 12 =>
+      Seq(compilerPlugin("org.scalamacros" % "paradise"       % paradiseVersion cross CrossVersion.patch))
+  }.toList.flatten
+}
+
+lazy val macroAnnotations = Def.setting {
+  PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
+    case Some((2, n)) if n >= 13 => Seq("-Ymacro-annotations")
+  }.toList.flatten
+}
+
+lazy val silencerPlugin = Def.setting {
+  PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
+    case Some((2, v)) if v >= 13 =>
+      Seq(compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full))
+  }.toList.flatten
+}
+
+lazy val silenceDeprecations = Def.setting {
+  PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
+    case Some((2, n)) if n >= 13 => Seq("-P:silencer:globalFilters=deprecated")
+  }.toList.flatten
+}
 
 inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
-  addCompilerPlugin("org.typelevel" %% "kind-projector" % kindProjectorVersion),
+  addCompilerPlugin("org.typelevel" % "kind-projector" % kindProjectorVersion cross CrossVersion.full),
   resolvers += "Gemini Repository" at "https://github.com/gemini-hlsw/maven-repo/raw/master/releases", // for gemini-locales
-  crossScalaVersions := Seq(scalaVersion.value), // for now, until we get doobie/fs2 upgraded
+  crossScalaVersions := Seq(scala212Version, scala213Version),
+  scalacOptions ++= macroAnnotations.value,
 ) ++ gspPublishSettings)
 
 // doesn't work to do this `inThisBuild`
@@ -71,8 +103,8 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
       "edu.gemini"                 %%% "gsp-math"      % gspMathVersion,
       "com.github.julien-truffaut" %%% "monocle-core"  % monocleVersion,
       "com.github.julien-truffaut" %%% "monocle-macro" % monocleVersion,
-    ),
-    addCompilerPlugin("org.scalamacros" %% "paradise" % paradiseVersion cross CrossVersion.patch),
+    ) ++ paradisePlugin.value ++ silencerPlugin.value,
+    scalacOptions ++= silenceDeprecations.value
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
   .jsSettings(gspScalaJsSettings: _*)
@@ -103,6 +135,8 @@ lazy val model_tests = crossProject(JVMPlatform, JSPlatform)
   .settings(
     skip in publish := true,
     name := "gsp-core-model-tests",
+    libraryDependencies ++= silencerPlugin.value,
+    scalacOptions in Test ++= silenceDeprecations.value
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
   .jsSettings(gspScalaJsSettings: _*)
@@ -119,7 +153,8 @@ lazy val db = project
     libraryDependencies ++= Seq(
       "org.tpolecat" %% "doobie-postgres"  % doobieVersion,
       "org.tpolecat" %% "doobie-scalatest" % doobieVersion  % "test"
-    ),
+    ) ++ silencerPlugin.value,
+    scalacOptions ++= silenceDeprecations.value,
     Test / parallelExecution := false
   )
   .enablePlugins(AutomateHeaderPlugin)
@@ -169,5 +204,6 @@ lazy val ephemeris = project
       // GspCoreTestkit.value,
       // Mouse.value,
       // Fs2IO
-    )
+    ) ++ silencerPlugin.value,
+    scalacOptions in Test ++= silenceDeprecations.value
   )
