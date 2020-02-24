@@ -4,7 +4,7 @@ import sbtcrossproject.CrossType
 lazy val doobieVersion           = "0.8.6"
 lazy val fs2Version              = "2.2.2"
 lazy val geminiLocalesVersion    = "0.2.0"
-lazy val gspMathVersion          = "0.1.13"
+lazy val gspMathVersion          = "0.1.14"
 lazy val kindProjectorVersion    = "0.11.0"
 lazy val monocleVersion          = "2.0.1"
 lazy val paradiseVersion         = "2.1.1"
