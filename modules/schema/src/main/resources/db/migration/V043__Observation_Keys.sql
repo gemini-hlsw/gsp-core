@@ -23,7 +23,6 @@ DROP INDEX ix_observation_instrument;
 DROP INDEX ix_observation_program_id;
 
 ALTER TABLE observation
-  DROP CONSTRAINT  observation_static_id_fkey,
   DROP COLUMN      static_id,
   DROP CONSTRAINT  observation_pkey CASCADE,
   DROP CONSTRAINT  observation_instrument_observation_id_key,
