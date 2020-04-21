@@ -11,7 +11,7 @@ lazy val paradiseVersion         = "2.1.1"
 lazy val flywayVersion           = "6.3.0"
 lazy val http4sVersion           = "0.21.1"
 lazy val scalaXmlVerson          = "1.2.0"
-lazy val mouseVersion            = "0.24"
+lazy val mouseVersion            = "0.25"
 lazy val silencerVersion         = "1.6.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
