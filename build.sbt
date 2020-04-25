@@ -2,16 +2,16 @@ import sbtcrossproject.crossProject
 import sbtcrossproject.CrossType
 
 lazy val doobieVersion           = "0.8.6"
-lazy val fs2Version              = "2.2.2"
-lazy val geminiLocalesVersion    = "0.3.0"
+lazy val fs2Version              = "2.3.0"
+lazy val geminiLocalesVersion    = "0.4.0"
 lazy val gspMathVersion          = "0.1.16"
 lazy val kindProjectorVersion    = "0.11.0"
 lazy val monocleVersion          = "2.0.4"
 lazy val paradiseVersion         = "2.1.1"
-lazy val flywayVersion           = "6.3.0"
-lazy val http4sVersion           = "0.21.1"
-lazy val scalaXmlVerson          = "1.2.0"
-lazy val mouseVersion            = "0.24"
+lazy val flywayVersion           = "6.3.3"
+lazy val http4sVersion           = "0.21.3"
+lazy val scalaXmlVerson          = "1.3.0"
+lazy val mouseVersion            = "0.25"
 lazy val silencerVersion         = "1.6.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
