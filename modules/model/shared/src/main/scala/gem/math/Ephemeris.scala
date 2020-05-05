@@ -43,7 +43,7 @@ sealed abstract case class Ephemeris private (toMap: TreeMap[Timestamp, Ephemeri
    * inclusive (so if `t` is present then `bracket(t) = (t, t)`).
    */
   def bracket(t: Timestamp): Option[(Element, Element)] =
-    (toMap.to(t).lastOption, toMap.from(t).headOption).tupled
+    (toMap.rangeTo(t).lastOption, toMap.rangeFrom(t).headOption).tupled
 
   /** The sum of this ephemeris and `e`, taking values from `e` in the case of overlap. */
   def ++(e: Ephemeris): Ephemeris =

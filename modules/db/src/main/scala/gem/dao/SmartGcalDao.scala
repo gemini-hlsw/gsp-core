@@ -375,7 +375,7 @@ object SmartGcalDao {
              AND acquisition_mirror = ${k.gnirs.acquisitionMirror}
              AND pixel_scale        = ${k.gnirs.pixelScale}
              AND disperser          = ${k.gnirs.disperser}
-             AND fpu_slit           = ${k.gnirs.fpu.right.toOption}
+             AND fpu_slit           = ${k.gnirs.fpu.toOption}
              AND fpu_other          = ${k.gnirs.fpu.left.toOption}
              AND prism              = ${k.gnirs.prism}
              AND well_depth         = ${k.gnirs.wellDepth}
@@ -391,7 +391,7 @@ object SmartGcalDao {
              AND acquisition_mirror = ${k.gnirs.acquisitionMirror}
              AND pixel_scale        = ${k.gnirs.pixelScale}
              AND disperser          = ${k.gnirs.disperser}
-             AND fpu_slit           = ${k.gnirs.fpu.right.toOption}
+             AND fpu_slit           = ${k.gnirs.fpu.toOption}
              AND fpu_other          = ${k.gnirs.fpu.left.toOption}
              AND prism              = ${k.gnirs.prism}
              AND well_depth         = ${k.gnirs.wellDepth}

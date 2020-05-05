@@ -49,9 +49,9 @@ final class EphemerisParserSpec extends CatsSuite with EphemerisTestSupport {
     // This works but the error message isn't helpful when it fails.  There
     // should be a way to combine shouldEqual assertions ...
     assert(
-      (e.toMap.size                == 51  ) &&
-      (e.toMap.to(head.lastKey)    == head) &&
-      (e.toMap.from(tail.firstKey) == tail)
+      (e.toMap.size                     == 51  ) &&
+      (e.toMap.rangeTo(head.lastKey)    == head) &&
+      (e.toMap.rangeFrom(tail.firstKey) == tail)
     )
   }
 

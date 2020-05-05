@@ -21,7 +21,7 @@ sealed trait Location extends Product with Serializable {
   // in the cacluation of Locations that fall between two other locations.
 
   /** Infinite Stream of position elements corresponding to this Location. */
-  protected def positions: Stream[Int]
+  protected def positions: LazyList[Int]
 
   /** Minimum size required to obtain all the fixed elements in this Location,
     * if any.  Beginning and End Locations have no fixed elements.
@@ -46,8 +46,8 @@ object Location {
     * Location (if any).
     */
   case object Beginning extends Location {
-    protected def positions: Stream[Int] =
-      Stream.continually(Int.MinValue)
+    protected def positions: LazyList[Int] =
+      LazyList.continually(Int.MinValue)
 
     protected def minPrefixLength: Int =
       0
@@ -57,8 +57,8 @@ object Location {
   /** A Location that falls somewhere between the Beginning and End.
     */
   sealed abstract case class Middle(posList: NonEmptyList[Int]) extends Location {
-    def positions: Stream[Int] =
-      posList.toList.toStream #::: Stream.continually(Int.MinValue)
+    def positions: LazyList[Int] =
+      posList.toList.to(LazyList) #::: LazyList.continually(Int.MinValue)
 
     def toList: List[Int] =
       posList.toList
@@ -74,8 +74,8 @@ object Location {
     * Locations that fall after the last existing Location (if any).
     */
   case object End extends Location {
-    def positions: Stream[Int] =
-      Stream.continually(Int.MaxValue)
+    def positions: LazyList[Int] =
+      LazyList.continually(Int.MaxValue)
 
     protected def minPrefixLength: Int =
       0
