@@ -86,7 +86,7 @@ object TargetDao extends EnumeratedMeta /* extend EnumeratedMeta to lower the pr
            ) VALUES""" ++ values(
              (target.name, trackType(target),
               target.track.left.toOption,
-              target.track.right.toOption,
+              target.track.toOption,
               stringyCoordinates(target)
              )
            )
@@ -101,7 +101,7 @@ object TargetDao extends EnumeratedMeta /* extend EnumeratedMeta to lower the pr
             ) =""" ++ values(
             (target.name, trackType(target),
              target.track.left.toOption,
-             target.track.right.toOption,
+             target.track.toOption,
              stringyCoordinates(target)
             )
       ) ++

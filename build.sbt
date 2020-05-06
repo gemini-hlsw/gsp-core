@@ -16,37 +16,11 @@ lazy val silencerVersion         = "1.6.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-lazy val paradisePlugin = Def.setting {
-  PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-    case Some((2, v)) if v <= 12 =>
-      Seq(compilerPlugin("org.scalamacros" % "paradise"       % paradiseVersion cross CrossVersion.patch))
-  }.toList.flatten
-}
-
-lazy val macroAnnotations = Def.setting {
-  PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-    case Some((2, n)) if n >= 13 => Seq("-Ymacro-annotations")
-  }.toList.flatten
-}
-
-lazy val silencerPlugin = Def.setting {
-  PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-    case Some((2, v)) if v >= 13 =>
-      Seq(compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full))
-  }.toList.flatten
-}
-
-lazy val silenceDeprecations = Def.setting {
-  PartialFunction.condOpt(CrossVersion.partialVersion(scalaVersion.value)) {
-    case Some((2, n)) if n >= 13 => Seq("-P:silencer:globalFilters=deprecated")
-  }.toList.flatten
-}
-
 inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
   addCompilerPlugin("org.typelevel" % "kind-projector" % kindProjectorVersion cross CrossVersion.full),
   resolvers += "Gemini Repository" at "https://github.com/gemini-hlsw/maven-repo/raw/master/releases", // for gemini-locales
-  scalacOptions ++= macroAnnotations.value,
+  scalacOptions += "-Ymacro-annotations",
 ) ++ gspPublishSettings)
 
 // doesn't work to do this `inThisBuild`
@@ -100,8 +74,7 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
       "edu.gemini"                 %%% "gsp-math"      % gspMathVersion,
       "com.github.julien-truffaut" %%% "monocle-core"  % monocleVersion,
       "com.github.julien-truffaut" %%% "monocle-macro" % monocleVersion,
-    ) ++ paradisePlugin.value ++ silencerPlugin.value,
-    scalacOptions ++= silenceDeprecations.value
+    )
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
   .jsSettings(gspScalaJsSettings: _*)
@@ -131,9 +104,7 @@ lazy val model_tests = crossProject(JVMPlatform, JSPlatform)
   .dependsOn(testkit)
   .settings(
     skip in publish := true,
-    name := "gsp-core-model-tests",
-    libraryDependencies ++= silencerPlugin.value,
-    scalacOptions in Test ++= silenceDeprecations.value
+    name := "gsp-core-model-tests"
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
   .jsSettings(gspScalaJsSettings: _*)
@@ -150,8 +121,7 @@ lazy val db = project
     libraryDependencies ++= Seq(
       "org.tpolecat" %% "doobie-postgres"  % doobieVersion,
       "org.tpolecat" %% "doobie-scalatest" % doobieVersion  % "test"
-    ) ++ silencerPlugin.value,
-    scalacOptions ++= silenceDeprecations.value,
+    ),
     Test / parallelExecution := false
   )
   .enablePlugins(AutomateHeaderPlugin)
@@ -201,6 +171,5 @@ lazy val ephemeris = project
       // GspCoreTestkit.value,
       // Mouse.value,
       // Fs2IO
-    ) ++ silencerPlugin.value,
-    scalacOptions in Test ++= silenceDeprecations.value
+    )
   )

@@ -30,7 +30,7 @@ final case class Semester(year: Year, half: Half) {
   /** This Semester plus the given number of half-years. */
   def plusSemesters(n: Int): Semester = {
     val yy = year.getValue
-    val hs = yy * 2 + half.toInt * yy.signum + n
+    val hs = yy * 2 + half.toInt * yy.sign + n
     Semester(Year.of(hs / 2), Half.unsafeFromInt(hs.abs % 2))
   }
 

@@ -35,7 +35,7 @@ trait TreeSetInstances extends TreeSetInstances1 {
             }
           } else None
         }
-        if (idx < Int.MaxValue && idx >= 0L)  go(idx.toInt, fa.toIterator) else None
+        if (idx < Int.MaxValue && idx >= 0L)  go(idx.toInt, fa.iterator) else None
       }
 
       override def size[A](fa: TreeSet[A]): Long = fa.size.toLong
@@ -66,7 +66,7 @@ trait TreeSetInstances extends TreeSetInstances1 {
 
   implicit def catsStdShowForTreeSet[A: Show]: Show[TreeSet[A]] = new Show[TreeSet[A]] {
     def show(fa: TreeSet[A]): String =
-      fa.toIterator.map(_.show).mkString("TreeSet(", ", ", ")")
+      fa.iterator.map(_.show).mkString("TreeSet(", ", ", ")")
   }
 
   implicit def catsKernelStdOrderForTreeSet[A: Order]: Order[TreeSet[A]] =
@@ -85,14 +85,14 @@ class TreeSetOrder[A: Order] extends Order[TreeSet[A]] {
   def compare(a1: TreeSet[A], a2: TreeSet[A]): Int = {
 
     Order[Int].compare(a1.size, a2.size) match {
-      case 0 => Order.compare(a1.toStream, a2.toStream)
+      case 0 => Order.compare(a1.to(LazyList), a2.to(LazyList))
       case x => x
     }
   }
 
   override def eqv(s1: TreeSet[A], s2: TreeSet[A]): Boolean = {
     // implicit val x = Order[A].toOrdering
-    s1.toStream.corresponds(s2.toStream)(Order[A].eqv)
+    s1.to(LazyList).corresponds(s2.to(LazyList))(Order[A].eqv)
   }
 }
 
@@ -119,7 +119,7 @@ class TreeSetHash[A: Order: Hash] extends Hash[TreeSet[A]] {
   }
   override def eqv(s1: TreeSet[A], s2: TreeSet[A]): Boolean = {
     // implicit val x = Order[A].toOrdering
-    s1.toStream.corresponds(s2.toStream)(Order[A].eqv)
+    s1.to(LazyList).corresponds(s2.to(LazyList))(Order[A].eqv)
   }
 }
 

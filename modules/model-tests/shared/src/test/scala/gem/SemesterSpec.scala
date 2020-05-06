@@ -109,7 +109,7 @@ final class SemesterSpec extends CatsSuite {
   test(".plusSemesters must be consistent with .plusYears, for reasonable values") {
     forAll { (s: Semester, n: Byte, b: Boolean) =>
       val nʹ = n.toInt
-      val bʹ = if (b) nʹ.signum else 0
+      val bʹ = if (b) nʹ.sign else 0
       val s1 = s.plusYears(nʹ).plusSemesters(bʹ)
       val s2 = s.plusSemesters(nʹ * 2 + bʹ)
       s1 shouldEqual s2
