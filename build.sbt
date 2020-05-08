@@ -8,7 +8,7 @@ lazy val gspMathVersion          = "0.1.17"
 lazy val kindProjectorVersion    = "0.11.0"
 lazy val monocleVersion          = "2.0.4"
 lazy val paradiseVersion         = "2.1.1"
-lazy val flywayVersion           = "6.4.0"
+lazy val flywayVersion           = "6.4.1"
 lazy val http4sVersion           = "0.21.3"
 lazy val scalaXmlVerson          = "1.3.0"
 lazy val mouseVersion            = "0.25"
@@ -19,7 +19,6 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 inThisBuild(Seq(
   homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
   addCompilerPlugin("org.typelevel" % "kind-projector" % kindProjectorVersion cross CrossVersion.full),
-  resolvers += "Gemini Repository" at "https://github.com/gemini-hlsw/maven-repo/raw/master/releases", // for gemini-locales
   scalacOptions += "-Ymacro-annotations",
 ) ++ gspPublishSettings)
 

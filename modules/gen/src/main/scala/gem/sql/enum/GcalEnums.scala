@@ -13,32 +13,32 @@ object GcalEnums {
     List(
 
       EnumDef.fromQuery("GcalFilter", "calibration unit filter") {
-        type R = Record.`'tag -> String, 'shortName -> String, 'longName -> String, 'obsolete -> Boolean`.T
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("obsolete")-> Boolean`.T
         sql"SELECT id, id tag, short_name, long_name, obsolete FROM e_gcal_filter".query[(String, R)]
       },
 
       EnumDef.fromQuery("GcalContinuum", "calibration unit continuum lamps") {
-        type R = Record.`'tag -> String, 'shortName -> String, 'longName -> String, 'obsolete -> Boolean`.T
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("obsolete")-> Boolean`.T
         sql"SELECT id, id tag, short_name, long_name, obsolete FROM e_gcal_continuum".query[(String, R)]
       },
 
       EnumDef.fromQuery("GcalArc", "calibration unit arc lamps") {
-        type R = Record.`'tag -> String, 'shortName -> String, 'longName -> String, 'obsolete -> Boolean`.T
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("obsolete")-> Boolean`.T
         sql"SELECT id, id tag, short_name, long_name, obsolete FROM e_gcal_arc".query[(String, R)]
       },
 
       EnumDef.fromQuery("GcalDiffuser", "calibration unit diffusers") {
-        type R = Record.`'tag -> String, 'shortName -> String, 'longName -> String, 'obsolete -> Boolean`.T
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("obsolete")-> Boolean`.T
         sql"SELECT id, id tag, short_name, long_name, obsolete FROM e_gcal_diffuser".query[(String, R)]
       },
 
       EnumDef.fromQuery("GcalShutter", "calibration unit shutter states") {
-        type R = Record.`'tag -> String, 'shortName -> String, 'longName -> String, 'obsolete -> Boolean`.T
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("obsolete")-> Boolean`.T
         sql"SELECT id, id tag, short_name, long_name, obsolete FROM e_gcal_shutter".query[(String, R)]
       },
 
       EnumDef.fromQuery("GcalBaselineType", "calibration baseline type") {
-        type R = Record.`'tag -> String`.T
+        type R = Record.`Symbol("tag")-> String`.T
         sql"""
           SELECT enumlabel x, enumlabel y
           FROM pg_enum JOIN pg_type ON pg_enum.enumtypid = pg_type.oid
@@ -47,7 +47,7 @@ object GcalEnums {
       },
 
       EnumDef.fromQuery("GcalLampType", "calibration lamp type") {
-        type R = Record.`'tag -> String`.T
+        type R = Record.`Symbol("tag")-> String`.T
         sql"""
           SELECT enumlabel x, enumlabel y
           FROM pg_enum JOIN pg_type ON pg_enum.enumtypid = pg_type.oid
@@ -56,7 +56,7 @@ object GcalEnums {
       },
 
       EnumDef.fromQuery("SmartGcalType", "\"smart\" calibration sequence tpes") {
-        type R = Record.`'tag -> String`.T
+        type R = Record.`Symbol("tag")-> String`.T
         sql"""
           SELECT enumlabel x, enumlabel y
           FROM pg_enum JOIN pg_type ON pg_enum.enumtypid = pg_type.oid
