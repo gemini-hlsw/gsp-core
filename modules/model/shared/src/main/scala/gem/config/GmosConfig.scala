@@ -403,7 +403,7 @@ object GmosConfig {
     val maskDefinitionFilename: Lens[GmosCustomMask, String] =
       Lens[GmosCustomMask, String](_.maskDefinitionFilename)(a => _.copy(maskDefinitionFilename = a))
 
-    /** @gropu Optics */
+    /** @group Optics */
     val slitWidth: Lens[GmosCustomMask, GmosCustomSlitWidth] =
       Lens[GmosCustomMask, GmosCustomSlitWidth](_.slitWidth)(a => _.copy(slitWidth = a))
 

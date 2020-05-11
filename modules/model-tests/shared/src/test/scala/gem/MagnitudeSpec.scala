@@ -11,7 +11,6 @@ final class MagnitudeSpec extends CatsSuite {
   import ArbMagnitude._
 
   // Laws
-  checkAll("Eq[Magnitude]",           EqTests[Magnitude].eqv)
-  checkAll("MagnitudeOrdering",       OrderTests[Magnitude](Magnitude.MagnitudeOrdering).order)
-  checkAll("MagnitudeOptionOrdering", OrderTests[Option[Magnitude]](Magnitude.MagnitudeOptionOrdering).order)
+  checkAll("Magnitude",         EqTests[Magnitude].eqv)
+  checkAll("MagnitudeOrdering", OrderTests[Magnitude](Magnitude.MagnitudeOrdering).order)
 }
