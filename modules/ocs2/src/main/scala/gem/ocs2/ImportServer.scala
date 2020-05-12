@@ -14,6 +14,7 @@ import org.http4s.server.Router
 import org.http4s.implicits._
 
 import java.util.logging.Logger
+import scala.concurrent.ExecutionContext.global
 
 /** A server that accepts HTTP requests to import observations or programs from
   * an OCS2 ODB.  If the corresponding observation or program has already been
@@ -85,7 +86,7 @@ object ImportServer extends IOApp {
 
     val httpApp = Router[IO]("/import" -> service).orNotFound
 
-    BlazeServerBuilder[IO]
+    BlazeServerBuilder[IO](global)
       .bindHttp(8989, "localhost")
       .withHttpApp(httpApp)
       .resource.use(_ => IO.never)
