@@ -76,6 +76,19 @@ final case class Zipper[A](lefts: List[A], focus: A, rights: List[A]) {
     else
       lefts.exists(p) || rights.exists(p)
 
+  def previous: Option[Zipper[A]] =
+    lefts match {
+      case Nil      => none
+      case x :: Nil => Zipper(Nil, x, focus :: rights).some
+      case _        => Zipper(lefts.init, lefts.last, focus :: rights).some
+    }
+
+  def next: Option[Zipper[A]] =
+    rights match {
+      case Nil       => none
+      case x :: tail => Zipper(lefts :+ focus, x, tail).some
+    }
+
   def find(p: A => Boolean): Option[A] =
     if (p(focus))
       focus.some
@@ -85,7 +98,7 @@ final case class Zipper[A](lefts: List[A], focus: A, rights: List[A]) {
   def withFocus: Zipper[(A, Boolean)] =
     Zipper(lefts.map((_, false)), (focus, true), rights.map((_, false)))
 
-  def toList: List[A] = (focus :: lefts.reverse).reverse ::: rights
+  def toList: List[A] = lefts.reverse ::: (focus :: rights)
 
   def toNel: NonEmptyList[A] = NonEmptyList.fromListUnsafe(toList)
 }
