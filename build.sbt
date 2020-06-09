@@ -1,18 +1,20 @@
 import sbtcrossproject.crossProject
 import sbtcrossproject.CrossType
 
-lazy val doobieVersion           = "0.8.6"
-lazy val fs2Version              = "2.3.0"
-lazy val geminiLocalesVersion    = "0.5.0"
-lazy val gspMathVersion          = "0.2.0"
-lazy val kindProjectorVersion    = "0.11.0"
-lazy val monocleVersion          = "2.0.4"
-lazy val paradiseVersion         = "2.1.1"
-lazy val flywayVersion           = "6.4.3"
-lazy val http4sVersion           = "0.21.4"
-lazy val scalaXmlVerson          = "1.3.0"
-lazy val mouseVersion            = "0.25"
-lazy val silencerVersion         = "1.6.0"
+lazy val doobieVersion               = "0.8.6"
+lazy val catsVersion                 = "2.1.1"
+lazy val catsTestkitScalaTestVersion = "1.0.1"
+lazy val fs2Version                  = "2.3.0"
+lazy val geminiLocalesVersion        = "0.5.0"
+lazy val gspMathVersion              = "0.2.0"
+lazy val kindProjectorVersion        = "0.11.0"
+lazy val monocleVersion              = "2.0.4"
+lazy val paradiseVersion             = "2.1.1"
+lazy val flywayVersion               = "6.4.2"
+lazy val http4sVersion               = "0.21.4"
+lazy val scalaXmlVerson              = "1.3.0"
+lazy val mouseVersion                = "0.25"
+lazy val silencerVersion             = "1.6.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -72,7 +74,7 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
       "co.fs2"                     %%% "fs2-core"      % fs2Version,
       "edu.gemini"                 %%% "gsp-math"      % gspMathVersion,
       "com.github.julien-truffaut" %%% "monocle-core"  % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-macro" % monocleVersion,
+      "com.github.julien-truffaut" %%% "monocle-macro" % monocleVersion
     )
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
@@ -119,7 +121,7 @@ lazy val db = project
     skip in publish := true,
     libraryDependencies ++= Seq(
       "org.tpolecat" %% "doobie-postgres"  % doobieVersion,
-      "org.tpolecat" %% "doobie-scalatest" % doobieVersion  % "test"
+      "org.tpolecat" %% "doobie-scalatest" % doobieVersion % "test"
     ),
     Test / parallelExecution := false
   )
@@ -165,10 +167,28 @@ lazy val ephemeris = project
     testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-l", "gem.test.Tags.RequiresNetwork"),
     libraryDependencies ++= Seq(
       "org.http4s"    %% "http4s-async-http-client" % http4sVersion,
-      "org.typelevel" %% "mouse"                    % mouseVersion,
+      "org.typelevel" %% "mouse"                    % mouseVersion
       // GspCoreDb.value,
       // GspCoreTestkit.value,
       // Mouse.value,
       // Fs2IO
     )
   )
+
+lazy val util = crossProject(JVMPlatform, JSPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("modules/util"))
+  .settings(commonSettings)
+  .settings(
+    name := "gpp-core-util",
+    libraryDependencies ++= Seq(
+      "org.typelevel"              %%% "cats-core"              % catsVersion,
+      "com.github.julien-truffaut" %%% "monocle-core"           % monocleVersion,
+      "com.github.julien-truffaut" %%% "monocle-macro"          % monocleVersion,
+      "org.typelevel"              %%% "cats-testkit"           % catsVersion,
+      "org.typelevel"              %%% "cats-testkit-scalatest" % catsTestkitScalaTestVersion,
+      "com.github.julien-truffaut" %%% "monocle-law"            % monocleVersion
+    )
+  )
+  .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
+  .jsSettings(gspScalaJsSettings: _*)
