@@ -14,7 +14,7 @@ import monocle.macros.Lenses
   * This is only meant for small collections. performance has not been optimized
   */
 @Lenses
-final case class Zipper[A](lefts: List[A], focus: A, rights: List[A]) {
+final case class Zipper[A] private (lefts: List[A], focus: A, rights: List[A]) {
 
   /**
     * Modify the focus
@@ -44,28 +44,22 @@ final case class Zipper[A](lefts: List[A], focus: A, rights: List[A]) {
   def findFocus(p: A => Boolean): Option[Zipper[A]] =
     if (p(focus)) this.some
     else {
-      val indexLeft  = lefts.indexWhere(p)
+      val indexLeft  = lefts.lastIndexWhere(p)
       val indexRight = rights.indexWhere(p)
       if (indexLeft === -1 && indexRight === -1)
         none
       else if (indexLeft >= 0)
         (lefts.splitAt(indexLeft) match {
-          case (Nil, h :: t)      =>
-            Zipper(Nil, h, t ::: focus :: rights)
-          case (x :: Nil, i :: l) =>
-            Zipper(List(x), i, l ::: focus :: rights)
-          case (x, i :: l)        =>
-            Zipper(x, i, (focus :: l.reverse).reverse ::: rights)
-          case _                  =>
+          case (x, i :: l) =>
+            Zipper(l, i, (focus :: x).reverse ::: rights)
+          case _           =>
             this
         }).some
       else
         (rights.splitAt(indexRight) match {
-          case (Nil, List(y)) =>
-            Zipper((focus :: lefts.reverse).reverse, y, Nil)
-          case (x, h :: t)    =>
-            Zipper((focus :: lefts.reverse).reverse ::: x, h, t)
-          case _              =>
+          case (x, h :: t) =>
+            Zipper(lefts ::: (focus :: x).reverse, h, t)
+          case _           =>
             this
         }).some
     }
@@ -78,15 +72,14 @@ final case class Zipper[A](lefts: List[A], focus: A, rights: List[A]) {
 
   def previous: Option[Zipper[A]] =
     lefts match {
-      case Nil      => none
-      case x :: Nil => Zipper(Nil, x, focus :: rights).some
-      case _        => Zipper(lefts.init, lefts.last, focus :: rights).some
+      case Nil    => none
+      case h :: t => Zipper(t, h, focus :: rights).some
     }
 
   def next: Option[Zipper[A]] =
     rights match {
       case Nil       => none
-      case x :: tail => Zipper(lefts :+ focus, x, tail).some
+      case h :: tail => Zipper(focus :: lefts, h, tail).some
     }
 
   def find(p: A => Boolean): Option[A] =
