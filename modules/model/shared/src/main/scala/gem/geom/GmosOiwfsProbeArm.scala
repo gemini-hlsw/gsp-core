@@ -7,11 +7,10 @@ import gsp.math.{Angle, Offset}
 import gsp.math.syntax.int._
 import gsp.math.geom.syntax.all._
 import cats.implicits._
+import gem.`enum`.{GmosNorthFpu, GmosSouthFpu, PortDisposition}
 import gsp.math.geom.ShapeExpression
 
 import scala.math.{Pi, asin, atan2, hypot, sin}
-
-// TODO: move to core
 
 /**
  * Description of the GMOS OIWFS probe arm geometry.
@@ -51,6 +50,9 @@ object GmosOiwfsProbeArm {
   val shape: ShapeExpression =
     arm ∪ pickoff
 
+  private def ifuOffset(fpu: Option[Either[GmosNorthFpu, GmosSouthFpu]]): Offset =
+    fpu.fold(Angle.Angle0)(_.fold(_.xOffset, _.xOffset)).offsetInP
+
   /**
    * The GMOS OIWFS probe arm positioned to reach a particular guide star at
    * a particular offset.
@@ -58,30 +60,30 @@ object GmosOiwfsProbeArm {
    * @param posAngle position angle where positive is counterclockwise
    * @param guideStar guide star offset from the center, relative to an un-rotated frame
    * @param offsetPos offset position from the base, if any
-   * @param ifuOffset correction for IFU FP-units, if any // TODO: replace with actual FPUnit
-   * @param sideLooking `true` when mounted on a side-looking port, `false` for up-looking // TODO: replace with enum
+   * @param fpu focal plane unit, if any
+   * @param port port disposition
    *
    * @return probe arm shape correctly rotated and offset to reach the guide star
    */
   def shapeAt(
-    posAngle:    Angle,
-    guideStar:   Offset,
-    offsetPos:   Offset,
-    ifuOffset:   Offset,
-    sideLooking: Boolean
+    posAngle:  Angle,
+    guideStar: Offset,
+    offsetPos: Offset,
+    fpu:       Option[Either[GmosNorthFpu, GmosSouthFpu]],
+    port:      PortDisposition
   ): ShapeExpression =
-    shape ⟲ armAngle(posAngle, guideStar, offsetPos, ifuOffset, sideLooking) ↗ guideStar
+    shape ⟲ armAngle(posAngle, guideStar, offsetPos, fpu, port) ↗ guideStar
 
   private def armAngle(
-    posAngle:    Angle,
-    guideStar:   Offset,
-    offsetPos:   Offset,
-    ifuOffset:   Offset,
-    sideLooking: Boolean
+    posAngle:  Angle,
+    guideStar: Offset,
+    offsetPos: Offset,
+    fpu:       Option[Either[GmosNorthFpu, GmosSouthFpu]],
+    port:      PortDisposition
   ): Angle = {
 
     val t   = Offset(427520.mas.p, 101840.mas.q)
-    val tʹ  = if (sideLooking) Offset.qAngle.modify(_.mirrorBy(Angle.Angle0))(t) else t
+    val tʹ  = if (port === PortDisposition.Side) Offset.qAngle.modify(_.mirrorBy(Angle.Angle0))(t) else t
 
     val bx  = Angle.signedDecimalArcseconds.get(StageArmLength).toDouble
     val bxᒾ = bx*bx
@@ -91,7 +93,7 @@ object GmosOiwfsProbeArm {
 
     val (x, y) =
       Offset.signedDecimalArcseconds.get(
-        tʹ.rotate(posAngle) + guideStar - (offsetPos - ifuOffset).rotate(posAngle)
+        tʹ.rotate(posAngle) + guideStar - (offsetPos - ifuOffset(fpu)).rotate(posAngle)
       ).bimap(x => -x.toDouble, _.toDouble)
 
     val r  = hypot(x, y)
@@ -105,7 +107,7 @@ object GmosOiwfsProbeArm {
           case a if a >  1.0 =>  1.0
           case a             =>    a
         }
-      ) * (if (sideLooking) -1.0 else 1.0)
+      ) * (if (port === PortDisposition.Side) -1.0 else 1.0)
 
     val θ  = {
       val θʹ = asin((mx / r) * sin(φ))
@@ -126,19 +128,19 @@ object GmosOiwfsProbeArm {
    *
    * @param posAngle position angle where positive is counterclockwise
    * @param offsetPos offset position from the base, if any
-   * @param ifuOffset correction for IFU FP-units, if any // TODO: replace with actual FPUnit
-   * @param sideLooking `true` when mounted on a side-looking port, `false` for up-looking // TODO: replace with enum
+   * @param fpu focal plane unit, if any
+   * @param port port disposition
    *
    * @return probe field shape rotated and offset
    */
   def patrolFieldAt(
-    posAngle:    Angle,
-    offsetPos:   Offset,
-    ifuOffset:   Offset,
-    sideLooking: Boolean
+    posAngle:  Angle,
+    offsetPos: Offset,
+    fpu:       Option[Either[GmosNorthFpu, GmosSouthFpu]],
+    port:      PortDisposition
   ): ShapeExpression = {
-    val pf = patrolField ↗ (ifuOffset - Offset(94950.mas.p, 89880.mas.q))
-    val s  = if (sideLooking) pf.flipQ else pf
+    val pf = patrolField ↗ (ifuOffset(fpu) - Offset(94950.mas.p, 89880.mas.q))
+    val s  = if (port === PortDisposition.Side) pf.flipQ else pf
     s ↗ offsetPos  ⟲ posAngle
   }
 

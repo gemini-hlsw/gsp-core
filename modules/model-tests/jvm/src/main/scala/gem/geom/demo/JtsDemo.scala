@@ -4,6 +4,7 @@
 package gem.geom
 package demo
 
+import gem.`enum`.{GmosNorthFpu, GmosSouthFpu, PortDisposition}
 import gsp.math.{Angle, Offset}
 import gsp.math.geom.ShapeExpression
 import gsp.math.geom.jts.JtsShape
@@ -31,20 +32,18 @@ object JtsDemo extends Frame("JTS Demo") {
   val offsetPos: Offset       =
     Offset(60.arcsec.p, 60.arcsec.q)
 
-  // TODO: should come from the FPUnit enum in core
-  val ifuOffset: Offset       =
-    Offset.Zero
+  val fpu: Option[Either[GmosNorthFpu, GmosSouthFpu]] =
+    Some(Right(GmosSouthFpu.LongSlit_5_00))
 
-  // TODO: when we move this core there should be an enum
-  val sideLooking: Boolean    =
-    true
+  val port: PortDisposition =
+    PortDisposition.Side
 
   // Shape to display
   val shapes: List[ShapeExpression] =
     List(
-      GmosOiwfsProbeArm.shapeAt(posAngle, guideStarOffset, offsetPos, ifuOffset, sideLooking),
-      GmosOiwfsProbeArm.patrolFieldAt(posAngle, offsetPos, ifuOffset, sideLooking),
-      GmosScienceAreaGeometry.imaging ↗ offsetPos ⟲ posAngle
+      GmosOiwfsProbeArm.shapeAt(posAngle, guideStarOffset, offsetPos, fpu, port),
+      GmosOiwfsProbeArm.patrolFieldAt(posAngle, offsetPos, fpu, port),
+      GmosScienceAreaGeometry.shapeAt(posAngle, offsetPos, fpu)
     )
 
   // Scale

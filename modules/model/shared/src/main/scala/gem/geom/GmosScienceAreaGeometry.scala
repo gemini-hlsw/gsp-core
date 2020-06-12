@@ -3,10 +3,10 @@
 
 package gem.geom
 
-import gsp.math.Angle
+import gem.`enum`.{GmosNorthFpu, GmosSouthFpu}
+import gsp.math.{Angle, Offset}
 import gsp.math.geom._
 import gsp.math.geom.syntax.all._
-
 import gsp.math.syntax.int._
 
 /**
@@ -19,6 +19,62 @@ object GmosScienceAreaGeometry {
 
   val mos: ShapeExpression =
     imagingFov(314240.mas, 17750.mas)
+
+  def shapeAt(
+    posAngle:    Angle,
+    offsetPos:   Offset,
+    fpu:         Option[Either[GmosNorthFpu, GmosSouthFpu]]
+  ): ShapeExpression =
+    shapeFromFpu(fpu) ↗ offsetPos ⟲ posAngle
+
+  private def shapeFromFpu(fpu: Option[Either[GmosNorthFpu, GmosSouthFpu]]): ShapeExpression =
+    fpu.fold(imaging) { f => f.fold(
+      n => n match {
+        case GmosNorthFpu.Ns0   |
+             GmosNorthFpu.Ns1   |
+             GmosNorthFpu.Ns2   |
+             GmosNorthFpu.Ns3   |
+             GmosNorthFpu.Ns4   |
+             GmosNorthFpu.Ns5   |
+             GmosNorthFpu.Ifu1  |
+             GmosNorthFpu.Ifu2  |
+             GmosNorthFpu.Ifu3          =>
+          ShapeExpression.empty
+
+        case GmosNorthFpu.LongSlit_0_25 |
+             GmosNorthFpu.LongSlit_0_50 |
+             GmosNorthFpu.LongSlit_0_75 |
+             GmosNorthFpu.LongSlit_1_00 |
+             GmosNorthFpu.LongSlit_1_50 |
+             GmosNorthFpu.LongSlit_2_00 |
+             GmosNorthFpu.LongSlit_5_00 =>
+          n.slitWidth.fold(ShapeExpression.empty)(longSlitFov)
+      },
+      s => s match {
+        case GmosSouthFpu.Bhros |
+             GmosSouthFpu.Ns1   |
+             GmosSouthFpu.Ns2   |
+             GmosSouthFpu.Ns3   |
+             GmosSouthFpu.Ns4   |
+             GmosSouthFpu.Ns5   |
+             GmosSouthFpu.Ifu1  |
+             GmosSouthFpu.Ifu2  |
+             GmosSouthFpu.Ifu3  |
+             GmosSouthFpu.IfuN  |
+             GmosSouthFpu.IfuNB |
+             GmosSouthFpu.IfuNR         =>
+          ShapeExpression.empty
+
+        case GmosSouthFpu.LongSlit_0_25 |
+             GmosSouthFpu.LongSlit_0_50 |
+             GmosSouthFpu.LongSlit_0_75 |
+             GmosSouthFpu.LongSlit_1_00 |
+             GmosSouthFpu.LongSlit_1_50 |
+             GmosSouthFpu.LongSlit_2_00 |
+             GmosSouthFpu.LongSlit_5_00 =>
+          s.slitWidth.fold(ShapeExpression.empty)(longSlitFov)
+      }
+    )}
 
   private def imagingFov(size: Angle, corner: Angle): ShapeExpression = {
     val centerCcdWidth: Angle = 165600.mas
