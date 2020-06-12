@@ -69,8 +69,8 @@ object GmosEnums {
       },
 
       EnumDef.fromQuery("GmosNorthFpu", "GMOS North focal plane units") {
-        type GmosNorthFpuRec = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("slitWidth")-> Option[Arcseconds]`.T
-        sql"""SELECT id, id tag, short_name, long_name, slit_width FROM e_gmos_north_fpu""".query[(String, GmosNorthFpuRec)]
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("slitWidth")-> Option[Arcseconds], Symbol("xOffset")-> Arcseconds`.T
+        sql"""SELECT id, id tag, short_name, long_name, slit_width, x_offset FROM e_gmos_north_fpu""".query[(String, R)]
       },
 
       EnumDef.fromQuery("GmosNorthStageMode", "GMOS North stage modes") {
@@ -94,8 +94,8 @@ object GmosEnums {
       },
 
       EnumDef.fromQuery("GmosSouthFpu", "GMOS South focal plane units") {
-        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("slitWidth")-> Option[Arcseconds]`.T
-        sql"""SELECT id, id tag, short_name, long_name, slit_width FROM e_gmos_south_fpu""".query[(String, R)]
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("slitWidth")-> Option[Arcseconds], Symbol("xOffset")-> Arcseconds`.T
+        sql"""SELECT id, id tag, short_name, long_name, slit_width, x_offset FROM e_gmos_south_fpu""".query[(String, R)]
       },
 
       EnumDef.fromQuery("GmosSouthStageMode", "GMOS South stage mode") {
