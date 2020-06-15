@@ -58,7 +58,7 @@ final case class Zipper[A] private (lefts: List[A], focus: A, rights: List[A]) {
       else
         (rights.splitAt(indexRight) match {
           case (x, h :: t) =>
-            Zipper(lefts ::: (focus :: x).reverse, h, t)
+            Zipper((focus :: x).reverse ::: lefts, h, t)
           case _           =>
             this
         }).some
@@ -103,6 +103,12 @@ object Zipper {
     */
   def fromNel[A](ne: NonEmptyList[A]): Zipper[A] =
     Zipper(Nil, ne.head, ne.tail)
+
+  /**
+    * Builds a Zipper from elements. The first element becomes the focus
+    */
+  def of[A](a: A, as: A*): Zipper[A] =
+    Zipper(Nil, a, as.toList)
 
   /**
     * @typeclass Eq
