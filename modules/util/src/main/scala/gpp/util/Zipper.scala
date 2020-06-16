@@ -132,4 +132,60 @@ object Zipper extends ZipperFactory[Zipper] {
 
   protected def build[A](lefts: List[A], focus: A, rights: List[A]): Zipper[A] =
     apply(lefts, focus, rights)
+
+  /**
+    * @typeclass Traverse
+    * Based on traverse implementation for List
+    */
+  implicit val traverse: Traverse[Zipper] = new Traverse[Zipper] {
+    override def traverse[G[_], A, B](
+      fa: Zipper[A]
+    )(f:  A => G[B])(implicit G: Applicative[G]): G[Zipper[B]] =
+      (fa.lefts.traverse(f), f(fa.focus), fa.rights.traverse(f)).mapN {
+        case (l, f, r) => build(l, f, r)
+      }
+
+    override def foldLeft[A, B](fa: Zipper[A], b: B)(f: (B, A) => B): B =
+      fa.toNel.foldLeft(b)(f)
+
+    override def foldRight[A, B](fa: Zipper[A], lb: Eval[B])(
+      f:                             (A, Eval[B]) => Eval[B]
+    ): Eval[B] = {
+      def loop(as: Vector[A]): Eval[B] =
+        as match {
+          case h +: t => f(h, Eval.defer(loop(t)))
+          case _      => lb
+        }
+
+      Eval.defer(loop(fa.toList.toVector))
+    }
+  }
+
+    /**
+    * Creates a monocle Traversal for the Zipper
+    */
+  def zipperT[A]: Traversal[Zipper[A], A] =
+    Traversal.fromTraverse
+
+  /**
+    * Traversal filtered zipper, Note this is unsafe as the predicate breaks some laws
+    */
+  def unsafeSelect[A](predicate: A => Boolean): Traversal[Zipper[A], A] =
+    new Traversal[Zipper[A], A] {
+      override def modifyF[F[_]: Applicative](f: A => F[A])(s: Zipper[A]): F[Zipper[A]] = {
+        val lefts: F[List[A]]  = s.lefts.traverse {
+          case x if predicate(x) => f(x)
+          case x                 => x.pure[F]
+        }
+        val rights: F[List[A]] = s.rights.traverse {
+          case x if predicate(x) => f(x)
+          case x                 => x.pure[F]
+        }
+        val focus: F[A]        =
+          if (predicate(s.focus)) f(s.focus) else s.focus.pure[F]
+        (lefts, focus, rights).mapN { (l, f, r) =>
+          build(l, f, r)
+        }
+      }
+    }
 }

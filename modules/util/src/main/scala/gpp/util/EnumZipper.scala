@@ -7,7 +7,7 @@ import cats.kernel.Eq
 import cats.implicits._
 import gem.util.Enumerated
 
-class EnumZipper[A](lefts: List[A], focus: A, rights: List[A])
+class EnumZipper[A] protected (lefts: List[A], focus: A, rights: List[A])
   extends Zipper[A](lefts: List[A], focus: A, rights: List[A])
   with ZipperOps[A, EnumZipper[A]] {
 

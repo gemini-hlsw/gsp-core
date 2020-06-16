@@ -3,9 +3,16 @@
 
 package gpp.util
 
+import cats.implicits._
 import cats.tests.CatsSuite
 import gem.enum.StepType
 import gem.enum.StepType._
+import cats.laws.discipline.{ FunctorTests, TraverseTests }
+import cats.laws.discipline.arbitrary._
+import monocle.law.discipline.TraversalTests
+import gem.arb.ArbEnumerated._
+import arb.ArbEnumZipper._
+import cats.kernel.laws.discipline.EqTests
 
 final class EnumZipperSpec extends CatsSuite {
   test("withFocus on focus") {
@@ -35,4 +42,5 @@ final class EnumZipperSpec extends CatsSuite {
     assert(z1.map(_.withFocus(SmartGcal)).exists(_.lefts === List(Science, Gcal, Dark, Bias)))
     assert(z1.map(_.withFocus(SmartGcal)).exists(_.rights.isEmpty))
   }
+  checkAll("Eq[EnumZipper]", EqTests[EnumZipper[StepType]].eqv)
 }
