@@ -85,6 +85,14 @@ final class ZipperSpec extends CatsSuite {
       assert(e.isDefined)
     }
   }
+  test("find focus on focus") {
+    // move three positions to the right
+    val z1 =
+      Zipper.fromNel(NonEmptyList(0, List(1, 2, 3, 4, 5, 6))).next.flatMap(_.next).flatMap(_.next)
+    assert(z1.flatMap(_.findFocus(_ === 3)).exists(_.focus === 3))
+    assert(z1.flatMap(_.findFocus(_ === 3)).exists(_.lefts === List(2, 1, 0)))
+    assert(z1.flatMap(_.findFocus(_ === 3)).exists(_.rights == List(4, 5, 6)))
+  }
   test("find focus on lefts") {
     // move three positions to the right
     val z1 =

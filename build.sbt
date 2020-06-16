@@ -179,6 +179,7 @@ lazy val util = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/util"))
   .settings(commonSettings)
+  .dependsOn(model)
   .settings(
     name := "gpp-core-util",
     libraryDependencies ++= Seq(
