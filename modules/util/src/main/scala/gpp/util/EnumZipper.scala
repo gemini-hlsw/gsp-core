@@ -16,7 +16,7 @@ class EnumZipper[A](lefts: List[A], focus: A, rights: List[A])
 
   override def unmodified: EnumZipper[A] = this
 
-  def focusIn(a: A)(implicit eq: Eq[A]): EnumZipper[A] =
+  def withFocus(a: A)(implicit eq: Eq[A]): EnumZipper[A] =
     if (focus === a) unmodified
     else {
       val indexLeft  = lefts.lastIndexWhere(_ === a)
