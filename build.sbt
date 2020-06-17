@@ -175,6 +175,74 @@ lazy val ephemeris = project
     )
   )
 
+lazy val svgtests = project
+  .enablePlugins(ScalaJSPlugin)
+  .enablePlugins(ScalaJSBundlerPlugin)
+  .enablePlugins(AutomateHeaderPlugin)
+  .in(file("modules/svgtests"))
+  .dependsOn(model.js)
+  .settings(
+    name := "gem--svgtests",
+    skip in publish := true
+  )
+  .settings(gspScalaJsSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      // "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeVersion,
+      "edu.gemini" %%% "gpp-svgdotjs" % svgdotjsVersion
+    ),
+    version in webpack := "4.43.0",
+    version in startWebpackDevServer := "3.11.0",
+    webpackConfigFile in fastOptJS := Some(
+      sourceDirectory.value / "webpack" / "dev.webpack.config.js"
+    ),
+    webpackConfigFile in fullOptJS := Some(
+      sourceDirectory.value / "webpack" / "prod.webpack.config.js"
+    ),
+    webpackMonitoredDirectories += (resourceDirectory in Compile).value,
+    webpackMonitoredDirectories += (sourceDirectory.value / "webpack"),
+    webpackResources := (sourceDirectory.value / "webpack") * "*.js",
+    includeFilter in webpackMonitoredFiles := "*",
+    webpackBundlingMode in fastOptJS := BundlingMode.LibraryOnly(),
+    webpackBundlingMode in fullOptJS := BundlingMode.Application,
+    test := {},
+    scalaJSLinkerConfig in (Compile, fastOptJS) ~= { _.withSourceMap(false) },
+    scalaJSLinkerConfig in (Compile, fullOptJS) ~= { _.withSourceMap(false) },
+    Test / requireJsDomEnv := true,
+    version in installJsdom := "16.2.0",
+    useYarn := true,
+    webpackConfigFile in Test := Some(
+      baseDirectory.value / "src" / "test" / "test.webpack.config.js"
+    ),
+    libraryDependencies ++= Seq(
+      "org.scalameta" %%% "munit"    % "0.7.8",
+      "edu.gemini"    %%% "gsp-math" % gspMathVersion
+    ),
+    testFrameworks := Seq(new TestFramework("munit.Framework")),
+    Compile / npmDependencies ++= Seq(
+      "@svgdotjs/svg.js" -> "3.0.16"
+    ),
+    Compile / npmDevDependencies ++= Seq(
+      "postcss-loader"                     -> "3.0.0",
+      "autoprefixer"                       -> "9.7.6",
+      "url-loader"                         -> "4.1.0",
+      "file-loader"                        -> "6.0.0",
+      "css-loader"                         -> "3.5.3",
+      "style-loader"                       -> "1.2.1",
+      "less"                               -> "3.11.1",
+      "less-loader"                        -> "6.1.0",
+      "webpack-merge"                      -> "4.2.2",
+      "mini-css-extract-plugin"            -> "0.9.0",
+      "webpack-dev-server-status-bar"      -> "1.1.2",
+      "cssnano"                            -> "4.1.10",
+      "terser-webpack-plugin"              -> "3.0.1",
+      "html-webpack-plugin"                -> "4.3.0",
+      "optimize-css-assets-webpack-plugin" -> "5.0.3",
+      "favicons-webpack-plugin"            -> "3.0.1",
+      "@packtracker/webpack-plugin"        -> "2.2.0"
+    )
+  )
+
 lazy val util = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/util"))
