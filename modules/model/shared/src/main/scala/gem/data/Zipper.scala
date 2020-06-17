@@ -1,7 +1,8 @@
 // Copyright (c) 2016-2020 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gpp.util
+package gem
+package data
 
 import cats._
 import cats.implicits._
@@ -15,7 +16,7 @@ import monocle.Lens
   * Minimal zipper based on scalaz's implementation
   * This is only meant for small collections. performance has not been optimized
   */
-protected[util] trait ZipperOps[A, +Z] {
+protected[data] trait ZipperOps[A, +Z] {
   val lefts: List[A]
   val focus: A
   val rights: List[A]

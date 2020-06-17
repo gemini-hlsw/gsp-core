@@ -1,27 +1,30 @@
 // Copyright (c) 2016-2020 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gpp.util.arb
+package gem
+package arb
 
 import cats.data.NonEmptyList
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{ Arbitrary, Cogen, Gen }
-import gpp.util.Zipper
+import gem.data.Zipper
 
 trait ArbZipper {
-
   implicit def arbZipper[A: Arbitrary]: Arbitrary[Zipper[A]] =
     Arbitrary {
-      val maxSize = 100
+      val MaxSideLength = 100
+
       for {
-        h <- arbitrary[A]
-        l <- Gen.choose(0, maxSize)
-        d <- Gen.listOfN(l, arbitrary[A])
-      } yield Zipper.fromNel(NonEmptyList.of(h, d: _*))
+        f <- arbitrary[A]
+        ll <- Gen.choose(0, MaxSideLength)
+        l <- Gen.listOfN(ll, arbitrary[A])
+        rl <- Gen.choose(0, MaxSideLength)
+        r <- Gen.listOfN(rl, arbitrary[A])
+      } yield Zipper(l, f, r)
     }
 
   implicit def zipperCogen[A: Cogen]: Cogen[Zipper[A]] =
-    Cogen[List[A]].contramap(_.toList)
+    Cogen[(List[A], A, List[A])].contramap(z => (z.lefts, z.focus, z.rights))
 
 }
 
