@@ -12,10 +12,10 @@ class EnumZipper[A] private (lefts: List[A], focus: A, rights: List[A])
   extends Zipper[A](lefts: List[A], focus: A, rights: List[A])
   with ZipperOps[A, EnumZipper[A]] {
 
-  override def build(lefts: List[A], focus: A, rights: List[A]): EnumZipper[A] =
+  override protected def build(lefts: List[A], focus: A, rights: List[A]): EnumZipper[A] =
     EnumZipper.build(lefts, focus, rights)
 
-  override def unmodified: EnumZipper[A] = this
+  override protected def unmodified: EnumZipper[A] = this
 
   def withFocus(a: A)(implicit eq: Eq[A]): EnumZipper[A] =
     findFocus(_ === a)

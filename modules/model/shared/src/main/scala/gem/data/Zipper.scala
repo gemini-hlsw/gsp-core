@@ -87,20 +87,20 @@ protected[data] trait ZipperOps[A, +Z] {
       lefts.find(p).orElse(rights.find(p))
 
   def withFocus: Zipper[(A, Boolean)] =
-    new Zipper(lefts.map((_, false)), (focus, true), rights.map((_, false)))
+    Zipper(lefts.map((_, false)), (focus, true), rights.map((_, false)))
 
   def toList: List[A] = lefts.reverse ::: (focus :: rights)
 
   def toNel: NonEmptyList[A] = NonEmptyList.fromListUnsafe(toList)
 }
 
-class Zipper[A](val lefts: List[A], val focus: A, val rights: List[A])
+class Zipper[A] protected (val lefts: List[A], val focus: A, val rights: List[A])
   extends ZipperOps[A, Zipper[A]] {
 
-  override def build(lefts: List[A], focus: A, rights: List[A]): Zipper[A] =
+  override protected def build(lefts: List[A], focus: A, rights: List[A]): Zipper[A] =
     Zipper.build(lefts, focus, rights)
 
-  override def unmodified: Zipper[A] = this
+  override protected def unmodified: Zipper[A] = this
 
   /**
     * Modify the focus
