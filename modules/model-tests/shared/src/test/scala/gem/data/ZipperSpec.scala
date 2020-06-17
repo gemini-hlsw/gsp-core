@@ -1,7 +1,8 @@
 // Copyright (c) 2016-2020 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gpp.util
+package gem
+package data
 
 import cats.data.NonEmptyList
 import cats.tests.CatsSuite
@@ -9,7 +10,7 @@ import cats.kernel.laws.discipline.EqTests
 import cats.laws.discipline.{ FunctorTests, TraverseTests }
 import cats.laws.discipline.arbitrary._
 import monocle.law.discipline.TraversalTests
-import arb.ArbZipper._
+import gem.arb.ArbZipper._
 
 /**
   * Tests the Zipper typeclasses
