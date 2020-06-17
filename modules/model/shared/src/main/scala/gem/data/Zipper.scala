@@ -26,17 +26,6 @@ protected[data] trait ZipperOps[A, +Z] {
   protected def unmodified: Z
 
   /**
-    * Modify the focus
-    */
-  def modify(f: A => A): Z = build(lefts, f(focus), rights)
-
-  /**
-    * Modify the focus
-    */
-  def modifyP(p: Prism[A, A]): Z =
-    p.getOption(focus).map(f => build(lefts, f, rights)).getOrElse(unmodified)
-
-  /**
     * Find and element and focus if successful
     */
   def findFocusP(p: PartialFunction[A, Boolean]): Option[Z] =
@@ -112,6 +101,17 @@ class Zipper[A](val lefts: List[A], val focus: A, val rights: List[A])
     Zipper.build(lefts, focus, rights)
 
   override def unmodified: Zipper[A] = this
+
+  /**
+    * Modify the focus
+    */
+  def modify(f: A => A): Zipper[A] = build(lefts, f(focus), rights)
+
+  /**
+    * Modify the focus
+    */
+  def modifyP(p: Prism[A, A]): Zipper[A] =
+    p.getOption(focus).map(f => build(lefts, f, rights)).getOrElse(unmodified)
 }
 
 object Zipper extends ZipperFactory[Zipper] {

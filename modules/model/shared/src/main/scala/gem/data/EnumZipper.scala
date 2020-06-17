@@ -8,7 +8,7 @@ import cats.kernel.Eq
 import cats.implicits._
 import gem.util.Enumerated
 
-class EnumZipper[A] protected (lefts: List[A], focus: A, rights: List[A])
+class EnumZipper[A] private (lefts: List[A], focus: A, rights: List[A])
   extends Zipper[A](lefts: List[A], focus: A, rights: List[A])
   with ZipperOps[A, EnumZipper[A]] {
 
@@ -17,16 +17,9 @@ class EnumZipper[A] protected (lefts: List[A], focus: A, rights: List[A])
 
   override def unmodified: EnumZipper[A] = this
 
-  def withFocus(a: A)(implicit eq: Enumerated[A]): EnumZipper[A] =
-    if (focus === a) unmodified
-    else 
-      Enumerated[A].all.indexWhere(_ === a).some.filter(_ >= 0).flatMap{ i =>
-        Enumerated[A].all.splitAt(i) match {
-          case (l, e :: r) =>
-            build(l.reverse, e, r).some
-          case _ => none
-        }
-      }.getOrElse(unmodified) // This shouldn't happen. Zipper contains all elements.
+  def withFocus(a: A)(implicit eq: Eq[A]): EnumZipper[A] =
+    findFocus(_ === a)
+      .getOrElse(unmodified) // This shouldn't happen. Zipper contains all elements.
 }
 
 object EnumZipper extends ZipperFactory[EnumZipper] {
