@@ -8,7 +8,7 @@ lazy val fs2Version                  = "2.4.2"
 lazy val geminiLocalesVersion        = "0.5.0"
 lazy val gspMathVersion              = "0.2.1"
 lazy val kindProjectorVersion        = "0.11.0"
-lazy val monocleVersion              = "2.0.4"
+lazy val monocleVersion              = "2.0.5"
 lazy val paradiseVersion             = "2.1.1"
 lazy val flywayVersion               = "6.4.2"
 lazy val http4sVersion               = "0.21.4"
@@ -179,6 +179,7 @@ lazy val util = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/util"))
   .settings(commonSettings)
+  .dependsOn(model)
   .settings(
     name := "gpp-core-util",
     libraryDependencies ++= Seq(
