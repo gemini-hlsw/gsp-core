@@ -1,40 +1,25 @@
 // Copyright (c) 2016-2020 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gpp.util
+package gem
+package data
 
 import cats.kernel.Eq
 import cats.implicits._
 import gem.util.Enumerated
 
-class EnumZipper[A](lefts: List[A], focus: A, rights: List[A])
+class EnumZipper[A] private (lefts: List[A], focus: A, rights: List[A])
   extends Zipper[A](lefts: List[A], focus: A, rights: List[A])
   with ZipperOps[A, EnumZipper[A]] {
 
-  override def build(lefts: List[A], focus: A, rights: List[A]): EnumZipper[A] =
+  override protected def build(lefts: List[A], focus: A, rights: List[A]): EnumZipper[A] =
     EnumZipper.build(lefts, focus, rights)
 
-  override def unmodified: EnumZipper[A] = this
+  override protected def unmodified: EnumZipper[A] = this
 
   def withFocus(a: A)(implicit eq: Eq[A]): EnumZipper[A] =
-    if (focus === a) unmodified
-    else {
-      val indexLeft  = lefts.lastIndexWhere(_ === a)
-      if (indexLeft >= 0)
-        (lefts.splitAt(indexLeft) match {
-          case (x, i :: l) =>
-            build(l, i, (focus :: x).reverse ::: rights)
-          case _           =>
-            unmodified
-        })
-      else
-        (rights.splitAt(rights.indexWhere(_ === a)) match {
-          case (x, h :: t) =>
-            build((focus :: x).reverse ::: lefts, h, t)
-          case _           =>
-            unmodified
-        })
-    }
+    findFocus(_ === a)
+      .getOrElse(unmodified) // This shouldn't happen. Zipper contains all elements.
 }
 
 object EnumZipper extends ZipperFactory[EnumZipper] {

@@ -1,7 +1,8 @@
 // Copyright (c) 2016-2020 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gpp.util
+package gem
+package data
 
 import cats._
 import cats.implicits._
@@ -15,7 +16,7 @@ import monocle.Lens
   * Minimal zipper based on scalaz's implementation
   * This is only meant for small collections. performance has not been optimized
   */
-protected[util] trait ZipperOps[A, +Z] {
+protected[data] trait ZipperOps[A, +Z] {
   val lefts: List[A]
   val focus: A
   val rights: List[A]
@@ -23,17 +24,6 @@ protected[util] trait ZipperOps[A, +Z] {
   protected def build(lefts: List[A], focus: A, rights: List[A]): Z
 
   protected def unmodified: Z
-
-  /**
-    * Modify the focus
-    */
-  def modify(f: A => A): Z = build(lefts, f(focus), rights)
-
-  /**
-    * Modify the focus
-    */
-  def modifyP(p: Prism[A, A]): Z =
-    p.getOption(focus).map(f => build(lefts, f, rights)).getOrElse(unmodified)
 
   /**
     * Find and element and focus if successful
@@ -97,20 +87,31 @@ protected[util] trait ZipperOps[A, +Z] {
       lefts.find(p).orElse(rights.find(p))
 
   def withFocus: Zipper[(A, Boolean)] =
-    new Zipper(lefts.map((_, false)), (focus, true), rights.map((_, false)))
+    Zipper(lefts.map((_, false)), (focus, true), rights.map((_, false)))
 
   def toList: List[A] = lefts.reverse ::: (focus :: rights)
 
   def toNel: NonEmptyList[A] = NonEmptyList.fromListUnsafe(toList)
 }
 
-class Zipper[A](val lefts: List[A], val focus: A, val rights: List[A])
+class Zipper[A] protected (val lefts: List[A], val focus: A, val rights: List[A])
   extends ZipperOps[A, Zipper[A]] {
 
-  override def build(lefts: List[A], focus: A, rights: List[A]): Zipper[A] =
+  override protected def build(lefts: List[A], focus: A, rights: List[A]): Zipper[A] =
     Zipper.build(lefts, focus, rights)
 
-  override def unmodified: Zipper[A] = this
+  override protected def unmodified: Zipper[A] = this
+
+  /**
+    * Modify the focus
+    */
+  def modify(f: A => A): Zipper[A] = build(lefts, f(focus), rights)
+
+  /**
+    * Modify the focus
+    */
+  def modifyP(p: Prism[A, A]): Zipper[A] =
+    p.getOption(focus).map(f => build(lefts, f, rights)).getOrElse(unmodified)
 }
 
 object Zipper extends ZipperFactory[Zipper] {
@@ -132,4 +133,60 @@ object Zipper extends ZipperFactory[Zipper] {
 
   protected def build[A](lefts: List[A], focus: A, rights: List[A]): Zipper[A] =
     apply(lefts, focus, rights)
+
+  /**
+    * @typeclass Traverse
+    * Based on traverse implementation for List
+    */
+  implicit val traverse: Traverse[Zipper] = new Traverse[Zipper] {
+    override def traverse[G[_], A, B](
+      fa: Zipper[A]
+    )(f:  A => G[B])(implicit G: Applicative[G]): G[Zipper[B]] =
+      (fa.lefts.traverse(f), f(fa.focus), fa.rights.traverse(f)).mapN {
+        case (l, f, r) => build(l, f, r)
+      }
+
+    override def foldLeft[A, B](fa: Zipper[A], b: B)(f: (B, A) => B): B =
+      fa.toNel.foldLeft(b)(f)
+
+    override def foldRight[A, B](fa: Zipper[A], lb: Eval[B])(
+      f:                             (A, Eval[B]) => Eval[B]
+    ): Eval[B] = {
+      def loop(as: Vector[A]): Eval[B] =
+        as match {
+          case h +: t => f(h, Eval.defer(loop(t)))
+          case _      => lb
+        }
+
+      Eval.defer(loop(fa.toList.toVector))
+    }
+  }
+
+    /**
+    * Creates a monocle Traversal for the Zipper
+    */
+  def zipperT[A]: Traversal[Zipper[A], A] =
+    Traversal.fromTraverse
+
+  /**
+    * Traversal filtered zipper, Note this is unsafe as the predicate breaks some laws
+    */
+  def unsafeSelect[A](predicate: A => Boolean): Traversal[Zipper[A], A] =
+    new Traversal[Zipper[A], A] {
+      override def modifyF[F[_]: Applicative](f: A => F[A])(s: Zipper[A]): F[Zipper[A]] = {
+        val lefts: F[List[A]]  = s.lefts.traverse {
+          case x if predicate(x) => f(x)
+          case x                 => x.pure[F]
+        }
+        val rights: F[List[A]] = s.rights.traverse {
+          case x if predicate(x) => f(x)
+          case x                 => x.pure[F]
+        }
+        val focus: F[A]        =
+          if (predicate(s.focus)) f(s.focus) else s.focus.pure[F]
+        (lefts, focus, rights).mapN { (l, f, r) =>
+          build(l, f, r)
+        }
+      }
+    }
 }

@@ -174,22 +174,3 @@ lazy val ephemeris = project
       // Fs2IO
     )
   )
-
-lazy val util = crossProject(JVMPlatform, JSPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/util"))
-  .settings(commonSettings)
-  .dependsOn(model)
-  .settings(
-    name := "gpp-core-util",
-    libraryDependencies ++= Seq(
-      "org.typelevel"              %%% "cats-core"              % catsVersion,
-      "com.github.julien-truffaut" %%% "monocle-core"           % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-macro"          % monocleVersion,
-      "org.typelevel"              %%% "cats-testkit"           % catsVersion,
-      "org.typelevel"              %%% "cats-testkit-scalatest" % catsTestkitScalaTestVersion,
-      "com.github.julien-truffaut" %%% "monocle-law"            % monocleVersion
-    )
-  )
-  .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
-  .jsSettings(gspScalaJsSettings: _*)

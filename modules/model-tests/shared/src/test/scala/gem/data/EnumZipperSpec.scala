@@ -1,11 +1,19 @@
 // Copyright (c) 2016-2020 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gpp.util
+package gem
+package data
 
+import cats.implicits._
 import cats.tests.CatsSuite
 import gem.enum.StepType
 import gem.enum.StepType._
+import cats.laws.discipline.{ FunctorTests, TraverseTests }
+import cats.laws.discipline.arbitrary._
+import monocle.law.discipline.TraversalTests
+import gem.arb.ArbEnumerated._
+import arb.ArbEnumZipper._
+import cats.kernel.laws.discipline.EqTests
 
 final class EnumZipperSpec extends CatsSuite {
   test("withFocus on focus") {
@@ -35,4 +43,5 @@ final class EnumZipperSpec extends CatsSuite {
     assert(z1.map(_.withFocus(SmartGcal)).exists(_.lefts === List(Science, Gcal, Dark, Bias)))
     assert(z1.map(_.withFocus(SmartGcal)).exists(_.rights.isEmpty))
   }
+  checkAll("Eq[EnumZipper]", EqTests[EnumZipper[StepType]].eqv)
 }
