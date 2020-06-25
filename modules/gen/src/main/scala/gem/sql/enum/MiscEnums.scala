@@ -19,6 +19,11 @@ object MiscEnums {
   val enums: List[ConnectionIO[EnumDef]] =
     List(
 
+      EnumDef.fromQuery("PortDisposition", "ISS Port Disposition") {
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String`.T
+        sql"SELECT id, id tag, short_name FROM e_port_disposition".query[(String, R)]
+      },
+
       EnumDef.fromQuery("MosPreImaging", "MOS pre-imaging category") {
         type R = Record.`Symbol("tag")-> String, Symbol("description")-> String, Symbol("toBoolean")-> Boolean`.T
         sql"SELECT id, id tag, description, to_boolean FROM e_mos_preimaging".query[(String, R)]

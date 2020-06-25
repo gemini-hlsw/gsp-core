@@ -1,36 +1,34 @@
 // Copyright (c) 2016-2020 Association of Universities for Research in Astronomy, Inc. (AURA)
 // For license information see LICENSE or https://opensource.org/licenses/BSD-3-Clause
 
-package gpp.util
+package gem
+package data
 
 import cats._
 import cats.implicits._
 import cats.data.NonEmptyList
 import monocle.{ Prism, Traversal }
 import monocle.macros.Lenses
+import monocle.macros.GenLens
+import monocle.Lens
 
 /**
   * Minimal zipper based on scalaz's implementation
   * This is only meant for small collections. performance has not been optimized
   */
-@Lenses
-final case class Zipper[A] private (lefts: List[A], focus: A, rights: List[A]) {
+protected[data] trait ZipperOps[A, +Z] {
+  val lefts: List[A]
+  val focus: A
+  val rights: List[A]
 
-  /**
-    * Modify the focus
-    */
-  def modify(f: A => A): Zipper[A] = copy(lefts, f(focus), rights)
+  protected def build(lefts: List[A], focus: A, rights: List[A]): Z
 
-  /**
-    * Modify the focus
-    */
-  def modifyP(p: Prism[A, A]): Zipper[A] =
-    p.getOption(focus).map(f => copy(lefts, f, rights)).getOrElse(this)
+  protected def unmodified: Z
 
   /**
     * Find and element and focus if successful
     */
-  def findFocusP(p: PartialFunction[A, Boolean]): Option[Zipper[A]] =
+  def findFocusP(p: PartialFunction[A, Boolean]): Option[Z] =
     findFocus(p.lift.andThen(_.getOrElse(false)))
 
   /**
@@ -41,8 +39,8 @@ final case class Zipper[A] private (lefts: List[A], focus: A, rights: List[A]) {
   /**
     * Find and element and focus if successful
     */
-  def findFocus(p: A => Boolean): Option[Zipper[A]] =
-    if (p(focus)) this.some
+  def findFocus(p: A => Boolean): Option[Z] =
+    if (p(focus)) unmodified.some
     else {
       val indexLeft  = lefts.lastIndexWhere(p)
       val indexRight = rights.indexWhere(p)
@@ -51,16 +49,16 @@ final case class Zipper[A] private (lefts: List[A], focus: A, rights: List[A]) {
       else if (indexLeft >= 0)
         (lefts.splitAt(indexLeft) match {
           case (x, i :: l) =>
-            Zipper(l, i, (focus :: x).reverse ::: rights)
+            build(l, i, (focus :: x).reverse ::: rights)
           case _           =>
-            this
+            unmodified
         }).some
       else
         (rights.splitAt(indexRight) match {
           case (x, h :: t) =>
-            Zipper(lefts ::: (focus :: x).reverse, h, t)
+            build((focus :: x).reverse ::: lefts, h, t)
           case _           =>
-            this
+            unmodified
         }).some
     }
 
@@ -70,16 +68,16 @@ final case class Zipper[A] private (lefts: List[A], focus: A, rights: List[A]) {
     else
       lefts.exists(p) || rights.exists(p)
 
-  def previous: Option[Zipper[A]] =
+  def previous: Option[Z] =
     lefts match {
       case Nil    => none
-      case h :: t => Zipper(t, h, focus :: rights).some
+      case h :: t => build(t, h, focus :: rights).some
     }
 
-  def next: Option[Zipper[A]] =
+  def next: Option[Z] =
     rights match {
       case Nil       => none
-      case h :: tail => Zipper(focus :: lefts, h, tail).some
+      case h :: tail => build(focus :: lefts, h, tail).some
     }
 
   def find(p: A => Boolean): Option[A] =
@@ -96,21 +94,45 @@ final case class Zipper[A] private (lefts: List[A], focus: A, rights: List[A]) {
   def toNel: NonEmptyList[A] = NonEmptyList.fromListUnsafe(toList)
 }
 
-object Zipper {
+class Zipper[A] protected (val lefts: List[A], val focus: A, val rights: List[A])
+  extends ZipperOps[A, Zipper[A]] {
+
+  override protected def build(lefts: List[A], focus: A, rights: List[A]): Zipper[A] =
+    Zipper.build(lefts, focus, rights)
+
+  override protected def unmodified: Zipper[A] = this
+
+  /**
+    * Modify the focus
+    */
+  def modify(f: A => A): Zipper[A] = build(lefts, f(focus), rights)
+
+  /**
+    * Modify the focus
+    */
+  def modifyP(p: Prism[A, A]): Zipper[A] =
+    p.getOption(focus).map(f => build(lefts, f, rights)).getOrElse(unmodified)
+}
+
+object Zipper extends ZipperFactory[Zipper] {
+
+  def apply[A](lefts: List[A], focus: A, rights: List[A]): Zipper[A] = 
+    new Zipper(lefts, focus, rights)
 
   /**
     * Builds a Zipper from NonEmptyList. The head of the list becomes the focus
     */
   def fromNel[A](ne: NonEmptyList[A]): Zipper[A] =
-    Zipper(Nil, ne.head, ne.tail)
+    apply(Nil, ne.head, ne.tail)
 
   /**
-    * @typeclass Eq
+    * Builds a Zipper from elements. The first element becomes the focus
     */
-  implicit def equal[A: Eq]: Eq[Zipper[A]] =
-    Eq.instance { (a, b) =>
-      a.focus === b.focus && a.lefts === b.lefts && a.rights === b.rights
-    }
+  def of[A](a: A, as: A*): Zipper[A] =
+    apply(Nil, a, as.toList)
+
+  protected def build[A](lefts: List[A], focus: A, rights: List[A]): Zipper[A] =
+    apply(lefts, focus, rights)
 
   /**
     * @typeclass Traverse
@@ -121,7 +143,7 @@ object Zipper {
       fa: Zipper[A]
     )(f:  A => G[B])(implicit G: Applicative[G]): G[Zipper[B]] =
       (fa.lefts.traverse(f), f(fa.focus), fa.rights.traverse(f)).mapN {
-        case (l, f, r) => Zipper(l, f, r)
+        case (l, f, r) => build(l, f, r)
       }
 
     override def foldLeft[A, B](fa: Zipper[A], b: B)(f: (B, A) => B): B =
@@ -140,7 +162,7 @@ object Zipper {
     }
   }
 
-  /**
+    /**
     * Creates a monocle Traversal for the Zipper
     */
   def zipperT[A]: Traversal[Zipper[A], A] =
@@ -163,9 +185,8 @@ object Zipper {
         val focus: F[A]        =
           if (predicate(s.focus)) f(s.focus) else s.focus.pure[F]
         (lefts, focus, rights).mapN { (l, f, r) =>
-          Zipper(l, f, r)
+          build(l, f, r)
         }
       }
     }
-
 }

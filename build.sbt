@@ -4,14 +4,14 @@ import sbtcrossproject.CrossType
 lazy val doobieVersion               = "0.8.6"
 lazy val catsVersion                 = "2.1.1"
 lazy val catsTestkitScalaTestVersion = "1.0.1"
-lazy val fs2Version                  = "2.4.1"
+lazy val fs2Version                  = "2.4.2"
 lazy val geminiLocalesVersion        = "0.5.0"
-lazy val gspMathVersion              = "0.2.0"
+lazy val gspMathVersion              = "0.2.2"
 lazy val kindProjectorVersion        = "0.11.0"
-lazy val monocleVersion              = "2.0.4"
+lazy val monocleVersion              = "2.0.5"
 lazy val paradiseVersion             = "2.1.1"
-lazy val flywayVersion               = "6.4.4"
-lazy val http4sVersion               = "0.21.4"
+lazy val flywayVersion               = "6.4.2"
+lazy val http4sVersion               = "0.21.5"
 lazy val scalaXmlVerson              = "1.3.0"
 lazy val mouseVersion                = "0.25"
 lazy val silencerVersion             = "1.6.0"
@@ -174,21 +174,3 @@ lazy val ephemeris = project
       // Fs2IO
     )
   )
-
-lazy val util = crossProject(JVMPlatform, JSPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/util"))
-  .settings(commonSettings)
-  .settings(
-    name := "gpp-core-util",
-    libraryDependencies ++= Seq(
-      "org.typelevel"              %%% "cats-core"              % catsVersion,
-      "com.github.julien-truffaut" %%% "monocle-core"           % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-macro"          % monocleVersion,
-      "org.typelevel"              %%% "cats-testkit"           % catsVersion,
-      "org.typelevel"              %%% "cats-testkit-scalatest" % catsTestkitScalaTestVersion,
-      "com.github.julien-truffaut" %%% "monocle-law"            % monocleVersion
-    )
-  )
-  .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
-  .jsSettings(gspScalaJsSettings: _*)
