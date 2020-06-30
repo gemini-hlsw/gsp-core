@@ -67,7 +67,7 @@ psql -c 'create database gem' -U postgres
 Initialize the database by running the migration scripts.
 
 ```
-sbt sql/flywayMigrate
+sbt schema/flywayMigrate
 ```
 
 If you ever want to wipe out the database and start over, you can do
