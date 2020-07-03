@@ -27,15 +27,15 @@ final class HorizonsSolutionRefQuerySpec extends CatsSuite with RespectIncludeTa
   }
 
   test("runs comet solution ref query", RequiresNetwork) {
-    HorizonsSolutionRefQuery(wild2).lookup.unsafeRunSync.isDefined shouldBe true
+    HorizonsSolutionRefQuery(wild2).lookup.unsafeRunSync().isDefined shouldBe true
   }
 
   test("runs asteroid solution ref query", RequiresNetwork) {
-    HorizonsSolutionRefQuery(beer).lookup.unsafeRunSync.isDefined shouldBe true
+    HorizonsSolutionRefQuery(beer).lookup.unsafeRunSync().isDefined shouldBe true
   }
 
   test("runs major body solution ref query", RequiresNetwork) {
-    HorizonsSolutionRefQuery(titan).lookup.unsafeRunSync.isDefined shouldBe true
+    HorizonsSolutionRefQuery(titan).lookup.unsafeRunSync().isDefined shouldBe true
   }
 }
 

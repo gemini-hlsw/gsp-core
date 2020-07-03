@@ -8,9 +8,6 @@ import cats._
 import cats.implicits._
 import cats.data.NonEmptyList
 import monocle.{ Prism, Traversal }
-import monocle.macros.Lenses
-import monocle.macros.GenLens
-import monocle.Lens
 
 /**
   * Minimal zipper based on scalaz's implementation

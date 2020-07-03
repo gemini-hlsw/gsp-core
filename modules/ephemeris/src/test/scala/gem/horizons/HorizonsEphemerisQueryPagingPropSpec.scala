@@ -53,7 +53,7 @@ class HorizonsEphemerisQueryPagingPropSpec extends CatsSuite {
   test("last element should be less than two step sizes away from end") {
     forAll { (t: TestCase) =>
       t.paging.lastOption match {
-        case None    => fail
+        case None    => fail()
         case Some(q) => q.endTime should (be >= t.end and be < (t.end + t.step * 2))
       }
     }
@@ -66,7 +66,7 @@ class HorizonsEphemerisQueryPagingPropSpec extends CatsSuite {
     val d = Duration.parse("PT6.69S")
     val t = TestCase(s, e, d)
     t.paging.lastOption match {
-      case None    => fail
+      case None    => fail()
       case Some(q) => q.endTime should (be >= t.end and be < (t.end + t.step * 2))
     }
   }
@@ -74,7 +74,7 @@ class HorizonsEphemerisQueryPagingPropSpec extends CatsSuite {
   test("first element should be exactly at start time") {
     forAll { (t: TestCase) =>
       t.paging.headOption match {
-        case None    => fail
+        case None    => fail()
         case Some(q) => q.startTime shouldEqual t.start
       }
     }

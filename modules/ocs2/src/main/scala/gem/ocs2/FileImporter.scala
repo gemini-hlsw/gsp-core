@@ -72,6 +72,6 @@ object FileImporter extends DoobieClient {
     } yield ()
 
   def main(args: Array[String]): Unit =
-    runl(args.toList).unsafeRunSync
+    runl(args.toList).unsafeRunSync()
 
 }

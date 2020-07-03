@@ -14,7 +14,6 @@ import gem.util.{ Timestamp, Location }
 import gsp.math._
 import java.time.LocalDate
 import org.scalatest.matchers.should.Matchers
-import org.scalatest._
 import org.scalatest.flatspec.AnyFlatSpec
 import scala.collection.immutable.{ TreeMap, TreeSet }
 
