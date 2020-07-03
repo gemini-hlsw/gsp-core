@@ -34,7 +34,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
   private def execTest[A](m: EphemerisMap, ca: ConnectionIO[A]): A =
     ((m.toList.traverse { case (ks, e) => EphemerisDao.insert(ks.key, ks.site, e) }) *> ca)
       .transact(xa)
-      .unsafeRunSync
+      .unsafeRunSync()
 
   test("EphemerisDao should return empty ephmeris if the key is not found") {
     forAll { (ks: KS, m: EphemerisMap) =>
@@ -97,7 +97,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
         .toList
         .traverse(_ => EphemerisDao.nextUserSuppliedKey)
         .transact(xa)
-        .unsafeRunSync
+        .unsafeRunSync()
 
     ids.distinct shouldEqual ids
   }
@@ -106,7 +106,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
     forAll { (ks: KS) =>
       val meta = EphemerisDao.selectMeta(ks.key, ks.site)
         .transact(xa)
-        .unsafeRunSync
+        .unsafeRunSync()
 
       meta shouldEqual None
     }
@@ -117,7 +117,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
       val p = EphemerisDao.insertMeta(ks.key, ks.site, m) *>
                 EphemerisDao.selectMeta(ks.key, ks.site)
 
-      p.transact(xa).unsafeRunSync shouldEqual Some(m)
+      p.transact(xa).unsafeRunSync() shouldEqual Some(m)
     }
   }
 
@@ -130,7 +130,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
       val selectOne = EphemerisDao.selectMeta(env.key, env.site)
 
       // Run the test
-      val res = (env.insertAll *> selectOne).transact(xa).unsafeRunSync
+      val res = (env.insertAll *> selectOne).transact(xa).unsafeRunSync()
 
       res shouldEqual Some(env.meta)
     }
@@ -148,7 +148,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
       val selectOne = EphemerisDao.selectMeta(env.key, env.site)
 
       // Run the test
-      val res = (env.insertAll *> updateOne *> selectOne).transact(xa).unsafeRunSync
+      val res = (env.insertAll *> updateOne *> selectOne).transact(xa).unsafeRunSync()
 
       res shouldEqual Some(meta)
     }
@@ -166,7 +166,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
       val selectOne = EphemerisDao.selectMeta(env.key, env.site)
 
       // Run the test
-      val res = (env.insertAll *> deleteOne *> selectOne).transact(xa).unsafeRunSync
+      val res = (env.insertAll *> deleteOne *> selectOne).transact(xa).unsafeRunSync()
 
       res shouldEqual None
     }
@@ -183,7 +183,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
           .drain
       }) *> EphemerisDao.selectAll(ks.key, ks.site)
 
-      e shouldEqual p.transact(xa).unsafeRunSync
+      e shouldEqual p.transact(xa).unsafeRunSync()
     }
   }
 
@@ -210,7 +210,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
       // updated
       val pʹʹ = pʹ *> EphemerisDao.selectAll(ks.key, ks.site)
 
-      e1 shouldEqual pʹʹ.transact(xa).unsafeRunSync
+      e1 shouldEqual pʹʹ.transact(xa).unsafeRunSync()
     }
   }
 
@@ -287,7 +287,7 @@ class EphemerisDaoSpec extends CatsSuite with DaoTest {
       val selectKeys = EphemerisDao.selectKeys(env.site)
 
       // Run the test
-      val res = (env.insertAll *> selectKeys).transact(xa).unsafeRunSync
+      val res = (env.insertAll *> selectKeys).transact(xa).unsafeRunSync()
 
       res shouldEqual expectedKeys
     }

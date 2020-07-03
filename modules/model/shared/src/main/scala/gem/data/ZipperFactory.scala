@@ -6,8 +6,7 @@ package data
 
 import cats._
 import cats.implicits._
-import cats.data.NonEmptyList
-import monocle.{ Lens, Prism, Traversal }
+import monocle.Lens
 
 protected[data] trait ZipperFactory[Z[A] <: ZipperOps[A, Zipper[A]]] {
 

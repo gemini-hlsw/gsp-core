@@ -10,7 +10,6 @@ import gsp.math.geom.ShapeExpression
 import gsp.math.geom.jts.JtsShape
 import gsp.math.geom.jts.jvm.syntax.awt._
 import gsp.math.geom.jts.interpreter._
-import gsp.math.geom.syntax.shapeexpression._
 import gsp.math.syntax.int._
 
 import java.awt.{List => _, _}
