@@ -16,7 +16,7 @@ final class HorizonsNameQuerySpec extends CatsSuite with RespectIncludeTags {
   import HorizonsNameQuery._
 
   def runSearch[A](s: Search[A]): Either[Error, List[Resolution[A]]] =
-    HorizonsNameQuery(s).lookup.value.unsafeRunSync
+    HorizonsNameQuery(s).lookup.value.unsafeRunSync()
 
   test("comet search should handle empty results", RequiresNetwork) {
     runSearch(Search.Comet("covfefe")) shouldEqual Nil.asRight

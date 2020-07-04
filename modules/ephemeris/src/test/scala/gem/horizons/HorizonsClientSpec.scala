@@ -16,7 +16,7 @@ final class HorizonsClientSpec extends CatsSuite {
     val count = 20
     val instrumented = { var x = 0; s.flatMap(_ => Stream.eval(IO { x += 1; Thread.sleep(10); x })) }
     val cs = Stream(instrumented).repeat.covary[IO].take(count.toLong)
-    cs.parJoinUnbounded.compile.toVector.unsafeRunSync == (1 to count).toList
+    cs.parJoinUnbounded.compile.toVector.unsafeRunSync() == (1 to count).toList
   }
 
   test("Arbitrary IO should be parallel.") {

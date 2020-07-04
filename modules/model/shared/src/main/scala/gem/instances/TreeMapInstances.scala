@@ -78,7 +78,7 @@ trait TreeMapInstances extends TreeMapInstances2 {
           }
 
         f(a).foreach { case (k, a) => descend(k, a) }
-        bldr.result
+        bldr.result()
       }
 
       override def size[A](fa: TreeMap[K, A]): Long = fa.size.toLong
@@ -88,7 +88,7 @@ trait TreeMapInstances extends TreeMapInstances2 {
         else {
           val n = idx.toInt
           if (n >= fa.size) None
-          else Some(fa.valuesIterator.drop(n).next)
+          else Some(fa.valuesIterator.drop(n).next())
         }
 
       override def isEmpty[A](fa: TreeMap[K, A]): Boolean = fa.isEmpty

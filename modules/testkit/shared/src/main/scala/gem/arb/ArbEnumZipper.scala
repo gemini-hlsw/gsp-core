@@ -5,7 +5,7 @@ package gem
 package arb
 
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{ Arbitrary, Cogen, Gen }
+import org.scalacheck.{ Arbitrary, Cogen }
 import org.scalacheck.Gen._
 import gem.arb.ArbEnumerated._
 import gem.data.EnumZipper

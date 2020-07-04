@@ -239,6 +239,6 @@ object SmartGcalImporter extends DoobieClient {
     } yield ()
 
   def main(args: Array[String]): Unit =
-    runc.unsafeRunSync
+    runc.unsafeRunSync()
 
 }

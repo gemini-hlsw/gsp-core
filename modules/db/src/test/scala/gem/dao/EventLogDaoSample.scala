@@ -40,6 +40,6 @@ object EventLogDaoSample {
     } yield ()
 
   def main(args: Array[String]): Unit =
-    run.unsafeRunSync
+    run.unsafeRunSync()
 
 }
