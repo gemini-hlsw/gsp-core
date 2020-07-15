@@ -4,12 +4,12 @@
 package gem
 package arb
 
-import org.scalacheck.{ Arbitrary, Cogen, Gen }
-import org.scalacheck.Arbitrary._
 import gem.SpatialProfile
 import gem.SpatialProfile._
 import gsp.math.arb.ArbAngle._
 import gsp.math.Angle
+import org.scalacheck.{ Arbitrary, Cogen, Gen }
+import org.scalacheck.Arbitrary._
 
 trait ArbSpatialProfile {
 
