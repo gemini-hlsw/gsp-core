@@ -14,6 +14,7 @@ object SpatialProfile {
   case object UniformSource extends SpatialProfile
   final case class GaussianSource(fwhm: Angle) extends SpatialProfile
 
+  /** @group Typeclass Instances */
   implicit val eqSpatialProfile: Eq[SpatialProfile] = Eq.instance {
     case (PointSource, PointSource)             => true
     case (UniformSource, UniformSource)         => true
