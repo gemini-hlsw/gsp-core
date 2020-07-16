@@ -5,19 +5,17 @@ package gem
 
 import cats._
 import coulomb._
-// import coulomb.si._
-// import coulomb.siprefix._
 import spire.std.bigDecimal._
 
 /**
   * Representation of a radial velocity in kilometers per second
   * Unlike RadialVelocity this is not limited to the speed of light
-  * This is often represented as cz
+  * Apparent Radial Velocity is often represented as cz
   */
 final case class ApparentRadialVelocity(cz: RadialVelocity.RVQuantity) {
 
   /**
-    * Converts the apparent radial velocity to a Redshift, approximate
+    * Converts the apparent radial velocity to a Redshift
     */
   def toRedshift: Redshift = Redshift((cz / RadialVelocity.C).value)
 }
@@ -25,7 +23,7 @@ final case class ApparentRadialVelocity(cz: RadialVelocity.RVQuantity) {
 object ApparentRadialVelocity {
 
   /**
-    * `No ApparentRadialVelocity`
+    * `Zero ApparentRadialVelocity`
     * @group Constructors
     */
   val Zero: ApparentRadialVelocity = new ApparentRadialVelocity(0.withUnit[RadialVelocity.RVUnit])

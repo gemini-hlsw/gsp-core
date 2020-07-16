@@ -6,8 +6,8 @@ package arb
 
 import coulomb._
 import org.scalacheck.Arbitrary
-import org.scalacheck.Gen
 import org.scalacheck.Cogen
+import org.scalacheck.Gen
 
 trait ArbRadialVelocity {
 

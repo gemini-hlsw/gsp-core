@@ -8,11 +8,14 @@ import cats.implicits._
 import coulomb._
 
 /**
-  * Represents a redshift of an object if it move away or towards the observing point
-  * Redshift can be higher than 1 or negative
-  * Redshift can be converted to RadialVelocity which takes into account relativistic effects and cannot be more than C
+  * Represents a redshift of an object as it moves away (positive) or towards (negative) the observing point
+  * 
+  * Redshift can be (perhaps suprpsinginly) higher than 1.
+  *
+  * For far objects Redshift can be converted to RadialVelocity which takes into account relativistic effects and cannot be more than C
   * For nearer objects we can convert to ApparentRadialVelocity which doesn't consider relativistic effects
-  * Offten Redshift is referred as z
+  *
+  * Often Redshift is referred as z
   */
 final case class Redshift(z: BigDecimal) {
 
@@ -24,7 +27,6 @@ final case class Redshift(z: BigDecimal) {
     RadialVelocity(rv.round(z.mc).withUnit[RadialVelocity.RVUnit])
   }
 
-  // We need a Functor[Quantity]
   def toApparentRadialVelocity: ApparentRadialVelocity =
     ApparentRadialVelocity((RadialVelocity.CValue * z).withUnit[RadialVelocity.RVUnit])
 }

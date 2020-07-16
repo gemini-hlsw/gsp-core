@@ -87,12 +87,10 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
       "edu.gemini"                 %%% "gsp-math"           % gspMathVersion,
       "com.github.julien-truffaut" %%% "monocle-core"       % monocleVersion,
       "com.github.julien-truffaut" %%% "monocle-macro"      % monocleVersion,
-      "com.manyangled"             %%% "coulomb"            % coulombVersion, // The seven SI units: meter, second, kilogram, etc
-      "com.manyangled"             %%% "coulomb-si-units"   % coulombVersion, // The seven SI units: meter, second, kilogram, etc
-      "com.manyangled"             %%% "coulomb-time-units" % coulombVersion, // minute, hour, day, week
-      "com.manyangled"             %%% "coulomb-temp-units" % coulombVersion, // Celsius and Fahrenheit temperature scales
-      "org.typelevel"              %%% "spire"              % "0.17.0-RC1",
-      "eu.timepit"                 %%% "singleton-ops"      % "0.5.0"
+      "com.manyangled"             %%% "coulomb"            % coulombVersion,
+      "com.manyangled"             %%% "coulomb-si-units"   % coulombVersion,
+      "org.typelevel"              %%% "spire"              % spireVersion,
+      "eu.timepit"                 %%% "singleton-ops"      % singletonOpsVersion
     )
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))

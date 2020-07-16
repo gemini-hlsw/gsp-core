@@ -10,9 +10,9 @@ import coulomb.siprefix._
 import spire.std.bigDecimal._
 
 /**
-  * Representation of a radial velocity in kilomoters per second
+  * Representation of a radial velocity in kilometers per second
   * Valid range is ]-C, C[ where C is the speed of light
-  * This is often represented as RV
+  * Radiav Velocity is often represented as RV
   */
 final case class RadialVelocity private (rv: RadialVelocity.RVQuantity) {
 
@@ -40,14 +40,22 @@ object RadialVelocity {
 
   val CRadialVelocity: RadialVelocity = new RadialVelocity(C)
 
+  /**
+    * Construct a RadialVelocity if the value is in the allowed range
+    * @group Constructors
+    */
   def apply(rv: RadialVelocity.RVQuantity): Option[RadialVelocity] =
     if (rv.value.abs < CValue) Some(new RadialVelocity(rv)) else None
 
+  /**
+    * Attempts to construct a RadialVelocity, it will fail if the value is outside the allowed range
+    * @group Constructors
+    */
   def unsafeFromRVQuantity(rv: RadialVelocity.RVQuantity): RadialVelocity =
     apply(rv).getOrElse(sys.error(s"Value of rv $rv not allowed"))
 
   /**
-    * `No RadialVelocity`
+    * `Zero RadialVelocity`
     * @group Constructors
     */
   val Zero: RadialVelocity = new RadialVelocity(0.withUnit[RVUnit])
