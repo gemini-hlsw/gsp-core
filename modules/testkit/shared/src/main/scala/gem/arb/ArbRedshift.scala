@@ -7,14 +7,14 @@ package arb
 import gem.Redshift
 import org.scalacheck.Arbitrary
 import org.scalacheck.Cogen
-import org.scalacheck.Arbitrary._
+import org.scalacheck.Gen
 
 trait ArbRedshift {
 
   implicit val arbRedshift: Arbitrary[Redshift] =
     Arbitrary {
       for {
-        rs <- arbitrary[BigDecimal]
+        rs <- Gen.chooseNum(-10.0, 10.0)
       } yield Redshift(rs)
     }
 

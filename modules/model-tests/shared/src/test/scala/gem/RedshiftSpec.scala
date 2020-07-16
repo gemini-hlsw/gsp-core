@@ -8,6 +8,8 @@ import cats.kernel.laws.discipline._
 
 import coulomb._
 import coulomb.si._
+import coulomb.siprefix._
+import java.math.MathContext
 import gem.arb._
 
 final class RedshiftSpec extends CatsSuite {
@@ -17,11 +19,16 @@ final class RedshiftSpec extends CatsSuite {
   checkAll("Redshift", EqTests[Redshift].eqv)
   checkAll("RedshiftOrder", OrderTests[Redshift].order)
 
-  test("fromVelocity") {
-    assert(Redshift.Zero.some === Redshift.fromVelocity(0.withUnit[Meter %/ Second]))
-    assert(Redshift.fromVelocity(Redshift.C).isEmpty)
+  test("toRadialVelocity") {
+    assert(Redshift.Zero.toRadialVelocity === RadialVelocity(0.withUnit[Meter %/ Second]))
     assert(
-      Redshift(3.335641007851109e-8).some === Redshift.fromVelocity(10.withUnit[Meter %/ Second])
+      // Example from http://spiff.rit.edu/classes/phys240/lectures/expand/expand.html
+      // We need to specify the Math context to properly compale
+      Redshift(BigDecimal.decimal(5.82, MathContext.DECIMAL32)).toRadialVelocity === RadialVelocity(
+        BigDecimal
+          .decimal(287172.912028, MathContext.DECIMAL32)
+          .withUnit[(Kilo %* Meter) %/ Second]
+      )
     )
   }
 }
