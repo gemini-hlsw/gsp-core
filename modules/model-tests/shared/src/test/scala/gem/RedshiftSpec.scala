@@ -23,10 +23,27 @@ final class RedshiftSpec extends CatsSuite {
     assert(Redshift.Zero.toRadialVelocity === RadialVelocity(0.withUnit[Meter %/ Second]))
     assert(
       // Example from http://spiff.rit.edu/classes/phys240/lectures/expand/expand.html
-      // We need to specify the Math context to properly compale
+      // We need to specify the Math context to properly compare
       Redshift(BigDecimal.decimal(5.82, MathContext.DECIMAL32)).toRadialVelocity === RadialVelocity(
         BigDecimal
           .decimal(287172.912028, MathContext.DECIMAL32)
+          .withUnit[(Kilo %* Meter) %/ Second]
+      )
+    )
+  }
+
+  test("toApparentRadialVelocity") {
+    assert(
+      Redshift.Zero.toApparentRadialVelocity === ApparentRadialVelocity(0.withUnit[Meter %/ Second])
+    )
+    assert(Redshift(1).toApparentRadialVelocity === ApparentRadialVelocity(RadialVelocity.C))
+    assert(
+      // In apparent radial velocity we can go faster than C
+      Redshift(
+        BigDecimal.decimal(5.82, MathContext.DECIMAL64)
+      ).toApparentRadialVelocity === ApparentRadialVelocity(
+        BigDecimal
+          .decimal(1744792.10556, MathContext.DECIMAL64)
           .withUnit[(Kilo %* Meter) %/ Second]
       )
     )

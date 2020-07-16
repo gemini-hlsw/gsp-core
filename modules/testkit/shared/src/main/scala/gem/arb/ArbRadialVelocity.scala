@@ -11,7 +11,7 @@ import org.scalacheck.Cogen
 
 trait ArbRadialVelocity {
 
-  implicit val arbRedshift: Arbitrary[RadialVelocity] =
+  implicit val arbRadialVelocity: Arbitrary[RadialVelocity] =
     Arbitrary {
       for {
         rv <-
@@ -19,7 +19,7 @@ trait ArbRadialVelocity {
       } yield RadialVelocity.unsafeFromRVQuantity(rv.withUnit[RadialVelocity.RVUnit])
     }
 
-  implicit val cogRedshift: Cogen[RadialVelocity] =
+  implicit val cogRadialVelocity: Cogen[RadialVelocity] =
     Cogen[BigDecimal].contramap(_.rv.value)
 }
 

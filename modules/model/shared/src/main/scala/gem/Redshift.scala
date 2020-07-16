@@ -24,9 +24,9 @@ final case class Redshift(z: BigDecimal) {
     RadialVelocity(rv.round(z.mc).withUnit[RadialVelocity.RVUnit])
   }
 
-  // // We need a Functor[Quantity]
-  // def toApparentRadialVelocity: RadialVelocity =
-  //   RadialVelocity((RadialVelocity.CValue * z).withUnit[RadialVelocity.RVUnit])
+  // We need a Functor[Quantity]
+  def toApparentRadialVelocity: ApparentRadialVelocity =
+    ApparentRadialVelocity((RadialVelocity.CValue * z).withUnit[RadialVelocity.RVUnit])
 }
 
 object Redshift {
