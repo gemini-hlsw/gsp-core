@@ -6,7 +6,7 @@ lazy val catsVersion                 = "2.1.1"
 lazy val catsTestkitScalaTestVersion = "1.0.1"
 lazy val fs2Version                  = "2.4.2"
 lazy val geminiLocalesVersion        = "0.5.0"
-lazy val gspMathVersion              = "0.2.4"
+lazy val gspMathVersion              = "0.2.5"
 lazy val kindProjectorVersion        = "0.11.0"
 lazy val monocleVersion              = "2.0.5"
 lazy val paradiseVersion             = "2.1.1"
@@ -18,11 +18,15 @@ lazy val silencerVersion             = "1.6.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-inThisBuild(Seq(
-  homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
-  addCompilerPlugin("org.typelevel" % "kind-projector" % kindProjectorVersion cross CrossVersion.full),
-  scalacOptions += "-Ymacro-annotations",
-) ++ gspPublishSettings)
+inThisBuild(
+  Seq(
+    homepage := Some(url("https://github.com/gemini-hlsw/gsp-core")),
+    addCompilerPlugin(
+      ("org.typelevel" % "kind-projector" % kindProjectorVersion).cross(CrossVersion.full)
+    ),
+    scalacOptions += "-Ymacro-annotations"
+  ) ++ gspPublishSettings
+)
 
 // doesn't work to do this `inThisBuild`
 lazy val commonSettings = Seq(
@@ -34,8 +38,13 @@ lazy val commonSettings = Seq(
 // don't publish an artifact for the [empty] root project
 skip in publish := true
 
-addCommandAlias("genEnums", "; gen/runMain gem.sql.Main modules/model/shared/src/main/scala/gem/enum; headerCreate")
-addCommandAlias("rebuildEnums", "; schema/flywayClean; schema/flywayMigrate; genEnums; modelJVM/compile")
+addCommandAlias(
+  "genEnums",
+  "; gen/runMain gem.sql.Main modules/model/shared/src/main/scala/gem/enum; headerCreate"
+)
+addCommandAlias("rebuildEnums",
+                "; schema/flywayClean; schema/flywayMigrate; genEnums; modelJVM/compile"
+)
 
 lazy val schema = project
   .in(file("modules/schema"))
@@ -44,7 +53,7 @@ lazy val schema = project
   .settings(
     name := "gsp-core-schema",
     skip in publish := true,
-    flywayUrl  := "jdbc:postgresql:gem",
+    flywayUrl := "jdbc:postgresql:gem",
     flywayUser := "postgres",
     flywayLocations := Seq(
       s"filesystem:${baseDirectory.value}/src/main/resources/db/migration"
@@ -164,7 +173,8 @@ lazy val ephemeris = project
     // to run these:
     //    sbt:gsp-core-ephemeris> set Test/testOptions := Nil
     //    sbt:gsp-core-ephemeris> test
-    testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-l", "gem.test.Tags.RequiresNetwork"),
+    testOptions in Test += Tests
+      .Argument(TestFrameworks.ScalaTest, "-l", "gem.test.Tags.RequiresNetwork"),
     libraryDependencies ++= Seq(
       "org.http4s"    %% "http4s-async-http-client" % http4sVersion,
       "org.typelevel" %% "mouse"                    % mouseVersion

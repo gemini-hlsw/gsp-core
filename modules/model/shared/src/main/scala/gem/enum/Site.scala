@@ -8,27 +8,58 @@ import cats.instances.string._
 import cats.syntax.eq._
 import gem.util.Enumerated
 import gsp.math.Angle
+import gsp.math.Lat
+import gsp.math.Place
 import java.time.ZoneId
 
 /**
- * Enumerated type for Gemini observing sites.
- * @group Enumerations (Generated)
- */
+  * Enumerated type for Gemini observing sites.
+  * @group Enumerations (Generated)
+  */
 sealed abstract class Site(
-  val tag: String,
+  val tag:       String,
   val shortName: String,
-  val longName: String,
-  val mountain: String,
-  val latitude: Angle,
+  val longName:  String,
+  val mountain:  String,
+  val latitude:  Angle,
   val longitude: Angle,
-  val altitude: Int,
-  val timezone: ZoneId
-) extends Product with Serializable
+  val altitude:  Int,
+  val timezone:  ZoneId
+) extends Product
+    with Serializable {
+  def toPlace: Place =
+    Place(
+      Lat.fromAngleWithCarry(latitude)._1,
+      longitude,
+      altitude.toDouble
+    )
+}
 
 object Site {
 
-  /** @group Constructors */ case object GN extends Site("GN", "GN", "Gemini North", "Mauna Kea", Angle.fromDoubleDegrees(19.8238068), Angle.fromDoubleDegrees(-155.4690550), 4213, ZoneId.of("Pacific/Honolulu"))
-  /** @group Constructors */ case object GS extends Site("GS", "GS", "Gemini South", "Cerro Pachon", Angle.fromDoubleDegrees(-30.2407494), Angle.fromDoubleDegrees(-70.7366867), 2722, ZoneId.of("America/Santiago"))
+  /** @group Constructors */
+  case object GN
+      extends Site("GN",
+                   "GN",
+                   "Gemini North",
+                   "Mauna Kea",
+                   Angle.fromDoubleDegrees(19.8238068),
+                   Angle.fromDoubleDegrees(-155.4690550),
+                   4213,
+                   ZoneId.of("Pacific/Honolulu")
+      )
+
+  /** @group Constructors */
+  case object GS
+      extends Site("GS",
+                   "GS",
+                   "Gemini South",
+                   "Cerro Pachon",
+                   Angle.fromDoubleDegrees(-30.2407494),
+                   Angle.fromDoubleDegrees(-70.7366867),
+                   2722,
+                   ZoneId.of("America/Santiago")
+      )
 
   /** All members of Site, in canonical order. */
   val all: List[Site] =
@@ -46,7 +77,7 @@ object Site {
   implicit val SiteEnumerated: Enumerated[Site] =
     new Enumerated[Site] {
       def all = Site.all
-      def tag(a: Site) = a.tag
+      def tag(a:                    Site)         = a.tag
       override def unsafeFromTag(s: String): Site =
         Site.unsafeFromTag(s)
     }
