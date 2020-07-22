@@ -14,7 +14,6 @@ import cats.tests.CatsSuite
 import java.time._
 import monocle.law.discipline._
 
-
 final class ObservingNightSpec extends CatsSuite {
   import ArbEnumerated._
   import ArbObservingNight._
@@ -76,6 +75,12 @@ final class ObservingNightSpec extends CatsSuite {
   test("night.previous.next shouldEqual night") {
     forAll { (o: ObservingNight) =>
       o.previous.next shouldEqual o
+    }
+  }
+
+  test("night.next.previous shouldEqual night") {
+    forAll { (o: ObservingNight) =>
+      o.next.previous shouldEqual o
     }
   }
 
