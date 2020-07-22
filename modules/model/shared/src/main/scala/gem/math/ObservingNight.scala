@@ -4,6 +4,7 @@
 package gem.math
 
 import gem.enum.Site
+import gsp.math.skycalc.TwilightBoundType
 
 import cats._
 import cats.effect.Sync
@@ -19,7 +20,26 @@ import monocle.macros.GenLens
   * An `ObservingNight` pairs a `Site` with a `LocalObservingNight` to obtain
   * precise start/end `Instant`s.
   */
-final case class ObservingNight(site: Site, toLocalObservingNight: LocalObservingNight) extends Night {
+final case class ObservingNight(site: Site, toLocalObservingNight: LocalObservingNight)
+    extends Night {
+
+  /** Constructs an[[gem.math.TwilightBoundedNight]] for this observing night
+    * according to the specified [[gsp.math.skycalc.TwilightBoundType]].
+    *
+    * Returns None if there's no sunset or sunrise for the specified
+    * [[gsp.math.skycalc.TwilightBoundType]].
+    */
+  def twilightBounded(boundType: TwilightBoundType): Option[TwilightBoundedNight] =
+    TwilightBoundedNight.fromBoundTypeAndObservingNight(boundType, this)
+
+  /** Constructs an[[gem.math.TwilightBoundedNight]] for this observing night
+    * according to the specified [[gsp.math.skycalc.TwilightBoundType]].
+    *
+    * Throws and exeception if there's no sunset or sunrise for the specified
+    * [[gsp.math.skycalc.TwilightBoundType]].
+    */
+  def twilightBoundedUnsafe(boundType: TwilightBoundType): TwilightBoundedNight =
+    twilightBounded(boundType).get
 
   /** The `Instant` at which the observing night starts (inclusive) for the
     * associated site.
@@ -105,6 +125,6 @@ trait ObservingNightOptics {
 
   /** @group Optics */
   val localDate: Lens[ObservingNight, LocalDate] =
-    localObservingNight composeIso LocalObservingNight.localDate
+    localObservingNight.composeIso(LocalObservingNight.localDate)
 
 }

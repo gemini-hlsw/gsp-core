@@ -31,7 +31,8 @@ sealed abstract class Site(
     Place(
       Lat.fromAngleWithCarry(latitude)._1,
       longitude,
-      altitude.toDouble
+      altitude.toDouble,
+      timezone
     )
 }
 
