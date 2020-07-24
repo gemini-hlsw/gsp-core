@@ -4,7 +4,7 @@
 package gem.math
 
 import gem.enum.Site
-import gsp.math.{ Lat, Place }
+import gem.enum.implicits._
 import gsp.math.skycalc.TwilightBoundType
 import gsp.math.skycalc.TwilightCalc
 
@@ -66,15 +66,9 @@ object TwilightBoundedNight extends TwilightBoundedNightOptics {
     boundType:      TwilightBoundType,
     observingNight: ObservingNight
   ): Option[TwilightBoundedNight] = {
-    val site  = observingNight.site
-    val place = Place(
-      Lat.fromAngleWithCarry(site.latitude)._1,
-      site.longitude,
-      site.altitude.toDouble,
-      site.timezone
-    )
+    val site = observingNight.site
     TwilightCalc
-      .calculate(boundType, observingNight.toLocalDate.minusDays(1), place)
+      .calculate(boundType, observingNight.toLocalDate.minusDays(1), site.toPlace)
       .map {
         case (start, end) =>
           TwilightBoundedNight(boundType, observingNight, start, end)
