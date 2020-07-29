@@ -9,8 +9,8 @@ import coulomb._
 
 /**
   * Represents a redshift of an object as it moves away (positive) or towards (negative) the observing point
-  * 
-  * Redshift can be (perhaps suprpsinginly) higher than 1.
+  *
+  * Redshift can be (perhaps surprisingly) higher than 1.
   *
   * For far objects Redshift can be converted to RadialVelocity which takes into account relativistic effects and cannot be more than C
   * For nearer objects we can convert to ApparentRadialVelocity which doesn't consider relativistic effects
@@ -23,12 +23,12 @@ final case class Redshift(z: BigDecimal) {
     * Converts to RadialVelocity, approximate
     */
   def toRadialVelocity: Option[RadialVelocity] = {
-    val rv = RadialVelocity.CValue * (((z + 1) * (z + 1) - 1) / ((z + 1) * (z + 1) + 1))
+    val rv = RadialVelocity.C.value * (((z + 1) * (z + 1) - 1) / ((z + 1) * (z + 1) + 1))
     RadialVelocity(rv.round(z.mc).withUnit[RadialVelocity.RVUnit])
   }
 
   def toApparentRadialVelocity: ApparentRadialVelocity =
-    ApparentRadialVelocity((RadialVelocity.CValue * z).withUnit[RadialVelocity.RVUnit])
+    ApparentRadialVelocity((RadialVelocity.C.value * z).withUnit[RadialVelocity.RVUnit])
 }
 
 object Redshift {

@@ -8,11 +8,12 @@ import coulomb._
 import coulomb.si._
 import coulomb.siprefix._
 import spire.std.bigDecimal._
+import java.math.MathContext
 
 /**
   * Representation of a radial velocity in kilometers per second
-  * Valid range is ]-C, C[ where C is the speed of light
-  * Radiav Velocity is often represented as RV
+  * Valid range is (-C, C) where C is the speed of light
+  * Radial Velocity is often represented as RV
   */
 final case class RadialVelocity private (rv: RadialVelocity.RVQuantity) {
 
@@ -30,15 +31,16 @@ final case class RadialVelocity private (rv: RadialVelocity.RVQuantity) {
 }
 
 object RadialVelocity {
+  type CUnit      = Meter %/ Second
   type RVUnit     = (Kilo %* Meter) %/ Second
   type RVQuantity = Quantity[BigDecimal, RVUnit]
 
-  val CValue: BigDecimal = BigDecimal.decimal(299792.458) // Use the default math context
+  // Reference: https://www.nist.gov/si-redefinition/meet-constants
+  // Exact value of the speed of light in m/s
+  private val CValue: BigDecimal = BigDecimal.decimal(299792458, MathContext.DECIMAL64)
 
   val C: RVQuantity =
-    CValue.withUnit[RVUnit] // Speed of light in km/s
-
-  val CRadialVelocity: RadialVelocity = new RadialVelocity(C)
+    CValue.withUnit[CUnit].toUnit[RVUnit] // Speed of light in km/s
 
   /**
     * Construct a RadialVelocity if the value is in the allowed range

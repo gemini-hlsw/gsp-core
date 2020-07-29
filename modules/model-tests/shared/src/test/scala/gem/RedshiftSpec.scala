@@ -24,9 +24,9 @@ final class RedshiftSpec extends CatsSuite {
     assert(
       // Example from http://spiff.rit.edu/classes/phys240/lectures/expand/expand.html
       // We need to specify the Math context to properly compare
-      Redshift(BigDecimal.decimal(5.82, MathContext.DECIMAL32)).toRadialVelocity === RadialVelocity(
+      Redshift(BigDecimal.decimal(5.82, MathContext.DECIMAL64)).toRadialVelocity === RadialVelocity(
         BigDecimal
-          .decimal(287172.912028, MathContext.DECIMAL32)
+          .decimal(287172.9120288430, MathContext.DECIMAL64)
           .withUnit[(Kilo %* Meter) %/ Second]
       )
     )

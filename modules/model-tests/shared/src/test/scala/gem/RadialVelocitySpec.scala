@@ -25,7 +25,6 @@ final class RadialVelocitySpec extends CatsSuite {
         .flatMap(_.toRedshift)
         .exists(_ === Redshift.Zero)
     )
-    assert(RadialVelocity.CRadialVelocity.toRedshift.isEmpty)
     assert(
       RadialVelocity(1000.withUnit[(Kilo %* Meter) %/ Second])
         .flatMap(_.toRedshift)

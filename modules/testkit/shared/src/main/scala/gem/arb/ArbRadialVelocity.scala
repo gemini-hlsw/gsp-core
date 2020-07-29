@@ -14,8 +14,9 @@ trait ArbRadialVelocity {
   implicit val arbRadialVelocity: Arbitrary[RadialVelocity] =
     Arbitrary {
       for {
-        rv <-
-          Gen.chooseNum(-1 * RadialVelocity.CValue.toDouble + 1, RadialVelocity.CValue.toDouble - 1)
+        rv <- Gen.chooseNum(-1 * RadialVelocity.C.value.toDouble + 1,
+                            RadialVelocity.C.value.toDouble - 1
+              )
       } yield RadialVelocity.unsafeFromRVQuantity(rv.withUnit[RadialVelocity.RVUnit])
     }
 
