@@ -5,12 +5,19 @@ package gem
 
 import cats.tests.CatsSuite
 import cats.kernel.laws.discipline._
+import monocle.law.discipline._
 
 import gem.arb._
+import gsp.math.arb.ArbAngle._
+import gsp.math.laws.discipline.SplitMonoTests
 
 final class ParallaxSpec extends CatsSuite {
   import ArbParallax._
 
   // Laws
-  checkAll("Parallax", OrderTests[Parallax].order)
+  checkAll("Parallax", EqTests[Parallax].eqv)
+  checkAll("Parallax.angle", IsoTests(Parallax.angle))
+  checkAll("Parallax.signedMicroarcseconds",
+           SplitMonoTests(Parallax.signedMilliarcseconds).splitMono
+  )
 }

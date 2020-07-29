@@ -3,25 +3,39 @@
 
 package gem
 
-import cats.Order
-import cats.implicits._
+import cats._
+import gsp.math.Angle
+import gsp.math.optics.SplitMono
+import monocle.Iso
 
 /**
-  * Parallax in mas
-  * Store the value in mas to avoid rounding errors
+  * Parallax stored as an angle
   */
-case class Parallax(mas: BigDecimal) extends Serializable
+case class Parallax(toAngle: Angle)
 
-object Parallax {
+object Parallax extends ParallaxOptics {
 
   /**
     * The `No parallax`
     * @group Constructors
     */
-  val Zero: Parallax = Parallax(0)
+  val Zero: Parallax = Parallax(Angle.Angle0)
 
   /** @group Typeclass Instances */
-  implicit val order: Order[Parallax] =
-    Order.by(_.mas)
+  implicit val eqParallax: Eq[Parallax] =
+    Eq.by(_.toAngle)
+
+}
+
+sealed trait ParallaxOptics {
+
+  val angle: Iso[Parallax, Angle] =
+    Iso[Parallax, Angle](_.toAngle)(Parallax.apply)
+
+  /**
+    * This `Parallax` as signed decimal milliarcseconds.
+    */
+  val signedMilliarcseconds: SplitMono[Parallax, BigDecimal] =
+    SplitMono.fromIso(angle).composeSplitMono(Angle.signedDecimalMilliarcseconds)
 
 }

@@ -7,16 +7,18 @@ package arb
 import gem.Parallax
 import org.scalacheck.{ Arbitrary, Cogen }
 import org.scalacheck.Arbitrary._
+import gsp.math.Angle
+import gsp.math.arb.ArbAngle._
 
 trait ArbParallax {
 
   implicit val arbParallax: Arbitrary[Parallax] =
     Arbitrary {
-      arbitrary[BigDecimal].map(Parallax.apply)
+      arbitrary[Angle].map(Parallax.apply)
     }
 
   implicit val cogParallax: Cogen[Parallax] =
-    Cogen[BigDecimal].contramap(_.mas)
+    Cogen[Angle].contramap(_.toAngle)
 }
 
 object ArbParallax extends ArbParallax
