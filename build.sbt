@@ -15,6 +15,9 @@ lazy val http4sVersion               = "0.21.6"
 lazy val scalaXmlVerson              = "1.3.0"
 lazy val mouseVersion                = "0.25"
 lazy val silencerVersion             = "1.6.0"
+lazy val coulombVersion              = "0.5.0"
+lazy val spireVersion                = "0.17.0-RC1"
+lazy val singletonOpsVersion         = "0.5.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -80,10 +83,14 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "gsp-core-model",
     libraryDependencies ++= Seq(
-      "co.fs2"                     %%% "fs2-core"      % fs2Version,
-      "edu.gemini"                 %%% "gsp-math"      % gspMathVersion,
-      "com.github.julien-truffaut" %%% "monocle-core"  % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-macro" % monocleVersion
+      "co.fs2"                     %%% "fs2-core"           % fs2Version,
+      "edu.gemini"                 %%% "gsp-math"           % gspMathVersion,
+      "com.github.julien-truffaut" %%% "monocle-core"       % monocleVersion,
+      "com.github.julien-truffaut" %%% "monocle-macro"      % monocleVersion,
+      "com.manyangled"             %%% "coulomb"            % coulombVersion,
+      "com.manyangled"             %%% "coulomb-si-units"   % coulombVersion,
+      "org.typelevel"              %%% "spire"              % spireVersion,
+      "eu.timepit"                 %%% "singleton-ops"      % singletonOpsVersion
     )
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))
