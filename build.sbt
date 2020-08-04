@@ -17,7 +17,7 @@ lazy val mouseVersion                = "0.25"
 lazy val silencerVersion             = "1.6.0"
 lazy val coulombVersion              = "0.5.0"
 lazy val spireVersion                = "0.17.0-RC1"
-lazy val singletonOpsVersion         = "0.5.0"
+lazy val singletonOpsVersion         = "0.5.1"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
