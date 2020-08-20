@@ -31,6 +31,7 @@ object EnumDef {
     implicit def caseZoneId[S] = at[(S, ZoneId)] { _ =>  Some("java.time.ZoneId") }
     implicit def caseWavelengthNm[S] = at[(S, Wavelength.Nm )] { _ =>  Some("gsp.math.Wavelength") }
     implicit def caseWavelengthUm[S] = at[(S, Wavelength.Um )] { _ =>  Some("gsp.math.Wavelength") }
+    implicit def caseQuantityUm[S] = at[(S, Quantity.Nm )] { _ =>  Some("coulomb._") }
     implicit def caseFiniteDurationSeconds[S] = at[(S, FiniteDuration.Seconds )] { _ =>  Some("scala.concurrent.duration._") }
     implicit def caseFiniteDurationMilliseconds[S] = at[(S, FiniteDuration.Milliseconds )] { _ =>  Some("scala.concurrent.duration._") }
     implicit def caseOptionArcseconds[S] = at[(S, Option[Arcseconds])] { _ =>  Some("gsp.math.Angle") }
@@ -38,6 +39,7 @@ object EnumDef {
     implicit def caseOptionDouble[S] = at[(S, Option[Double])] { _ =>  Option.empty[String] }
     implicit def caseOptionWavelengthNm[S] = at[(S, Option[Wavelength.Nm])] { _ => Some("gsp.math.Wavelength") }
     implicit def caseOptionWavelengthUm[S] = at[(S, Option[Wavelength.Um])] { _ => Some("gsp.math.Wavelength") }
+    implicit def caseOptionQuantityNm[S] = at[(S, Option[Quantity.Nm])] { _ => Some("coulomb._") }
     implicit def caseMagnitudeSystem[S] = at[(S, MagnitudeSystem)] { _ => Option.empty[String] }
     implicit def caseMagnitudeBand[S] = at[(S, MagnitudeBand)] { _ => Option.empty[String] }
     implicit def caseOptionMagnitudeBand[S] = at[(S, Option[MagnitudeBand])] { _ => Option.empty[String] }
@@ -65,6 +67,7 @@ object EnumDef {
 
     implicit def caseWavelengthNm[S <: Symbol] = at[(S, Wavelength.Nm ) ] { case (s, _) => "  val " + s.name + ": Wavelength"}
     implicit def caseWavelengthUm[S <: Symbol] = at[(S, Wavelength.Um ) ] { case (s, _) => "  val " + s.name + ": Wavelength"}
+    implicit def caseQuantityNm[S <: Symbol] = at[(S, Quantity.Nm ) ] { case (s, _) => "  val " + s.name + ": coulomb.Quantity[Int, gsp.math.units.Nanometer]"}
 
     implicit def caseFiniteDurationSeconds     [S <: Symbol] = at[(S, FiniteDuration.Seconds      )] {  case (s, _) => "  val " + s.name + ": FiniteDuration" }
     implicit def caseFiniteDurationMilliseconds[S <: Symbol] = at[(S, FiniteDuration.Milliseconds )] {  case (s, _) => "  val " + s.name + ": FiniteDuration" }
@@ -74,6 +77,7 @@ object EnumDef {
     implicit def caseOptionDouble[S <: Symbol] = at[(S, Option[Double]) ] { case (s, _) => "  val " + s.name + ": Option[Double]" }
 
     implicit def caseOptionWavelengthNm[S <: Symbol] = at[(S, Option[Wavelength.Nm])] { case (s, _) => s"  val ${s.name}: Option[Wavelength]" }
+    implicit def caseOptionQuantityNm[S <: Symbol] = at[(S, Option[Quantity.Nm])] { case (s, _) => s"  val ${s.name}: Option[Quantity[Int, gsp.math.units.Nanometer]]" }
     implicit def caseOptionWavelengthUm[S <: Symbol] = at[(S, Option[Wavelength.Um])] { case (s, _) => s"  val ${s.name}: Option[Wavelength]" }
 
     implicit def caseMagnitudeSystem    [S <: Symbol] = at[(S, MagnitudeSystem)      ] { case (s, _) => s"  val ${s.name}: MagnitudeSystem" }
@@ -105,6 +109,7 @@ object EnumDef {
     implicit val caseWavelengthPm    = at[Wavelength.Pm  ](a => s"""Wavelength.fromPicometers.unsafeGet(${a.toPicometers})""")
     implicit val caseWavelengthNm    = at[Wavelength.Nm  ](a => s"""Wavelength.fromPicometers.unsafeGet(${a.toPicometers})""")
     implicit val caseWavelengthUm    = at[Wavelength.Um  ](a => s"""Wavelength.fromPicometers.unsafeGet(${a.toPicometers})""")
+    implicit val caseQuantityNm      = at[Quantity.Nm  ](a => s"""${a.toBigDecimal}.withUnit[gsp.math.units.Nanometer]""")
     implicit val caseMagnitudeSystem = at[MagnitudeSystem](a => s"MagnitudeSystem.${a.id}")
 
     implicit val caseFiniteDurationSeconds      = at[FiniteDuration.Seconds     ](a => s"""${a.toMillis}.millis""")

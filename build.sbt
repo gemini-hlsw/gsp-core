@@ -6,7 +6,7 @@ lazy val catsVersion                 = "2.1.1"
 lazy val catsTestkitScalaTestVersion = "1.0.1"
 lazy val fs2Version                  = "2.4.3"
 lazy val geminiLocalesVersion        = "0.5.0"
-lazy val gspMathVersion              = "0.2.8"
+lazy val gspMathVersion              = "0.3.0"
 lazy val kindProjectorVersion        = "0.11.0"
 lazy val monocleVersion              = "2.1.0"
 lazy val paradiseVersion             = "2.1.1"
@@ -83,14 +83,14 @@ lazy val model = crossProject(JVMPlatform, JSPlatform)
   .settings(
     name := "gsp-core-model",
     libraryDependencies ++= Seq(
-      "co.fs2"                     %%% "fs2-core"           % fs2Version,
-      "edu.gemini"                 %%% "gsp-math"           % gspMathVersion,
-      "com.github.julien-truffaut" %%% "monocle-core"       % monocleVersion,
-      "com.github.julien-truffaut" %%% "monocle-macro"      % monocleVersion,
-      "com.manyangled"             %%% "coulomb"            % coulombVersion,
-      "com.manyangled"             %%% "coulomb-si-units"   % coulombVersion,
-      "org.typelevel"              %%% "spire"              % spireVersion,
-      "eu.timepit"                 %%% "singleton-ops"      % singletonOpsVersion
+      "co.fs2"                     %%% "fs2-core"         % fs2Version,
+      "edu.gemini"                 %%% "gsp-math"         % gspMathVersion,
+      "com.github.julien-truffaut" %%% "monocle-core"     % monocleVersion,
+      "com.github.julien-truffaut" %%% "monocle-macro"    % monocleVersion,
+      "com.manyangled"             %%% "coulomb"          % coulombVersion,
+      "com.manyangled"             %%% "coulomb-si-units" % coulombVersion,
+      "org.typelevel"              %%% "spire"            % spireVersion,
+      "eu.timepit"                 %%% "singleton-ops"    % singletonOpsVersion
     )
   )
   .jvmConfigure(_.enablePlugins(AutomateHeaderPlugin))

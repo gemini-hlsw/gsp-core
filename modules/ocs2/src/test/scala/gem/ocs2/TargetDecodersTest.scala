@@ -109,9 +109,8 @@ object TargetDecodersTest {
                 Offset.Q(Angle.milliarcseconds.reverseGet(3))
               )
 
-    val rv  = RadialVelocity.unsafeFromRedshift(4.0)
-
-    val px  = Angle.milliarcseconds.reverseGet(1)
+    val rv = Redshift(4).toRadialVelocity.get
+    val px = Angle.milliarcseconds.reverseGet(1)
 
     ProperMotion(c, Epoch.J2000, Some(off), Some(rv), Some(px))
   }

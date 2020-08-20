@@ -4,16 +4,15 @@
 package gem
 package arb
 
-import gem.config.{DynamicConfig, StaticConfig}
+import gem.config.{ DynamicConfig, StaticConfig }
 import gem.config.GmosConfig._
 import gem.enum._
-import gsp.math.{Offset, Wavelength}
+import gsp.math.{ Offset, Wavelength }
 import gsp.math.arb.{ ArbOffset, ArbTime, ArbWavelength }
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Cogen, Gen}
+import org.scalacheck.{ Arbitrary, Cogen, Gen }
 
 import java.time.Duration
-
 
 trait ArbGmos {
 
@@ -21,7 +20,6 @@ trait ArbGmos {
   import ArbEnumerated._
   import ArbTime._
   import ArbWavelength._
-
 
   // Static Config
 
@@ -104,7 +102,6 @@ trait ArbGmos {
     Cogen[(GmosCommonStaticConfig, GmosSouthStageMode)]
       .contramap(g => (g.common, g.stageMode))
 
-
   // Dynamic Config
 
   implicit val arbGmosCcdReadout: Arbitrary[GmosCcdReadout] =
@@ -152,7 +149,7 @@ trait ArbGmos {
       for {
         d <- arbitrary[GmosNorthDisperser]
         o <- arbitrary[GmosDisperserOrder]
-        w <- Gen.choose(3000, 12000).map(Wavelength.fromAngstroms.unsafeGet)
+        w <- Gen.choose(3000, 12000).map(Wavelength.fromAngstrom(_).get)
       } yield GmosGrating(d, o, w)
     }
 
@@ -165,7 +162,7 @@ trait ArbGmos {
       for {
         d <- arbitrary[GmosSouthDisperser]
         o <- arbitrary[GmosDisperserOrder]
-        w <- Gen.choose(3000, 12000).map(Wavelength.fromAngstroms.unsafeGet)
+        w <- Gen.choose(3000, 12000).map(Wavelength.fromAngstrom(_).get)
       } yield GmosGrating(d, o, w)
     }
 

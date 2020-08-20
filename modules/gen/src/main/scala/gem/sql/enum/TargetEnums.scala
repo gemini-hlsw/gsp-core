@@ -40,7 +40,7 @@ object TargetEnums {
       },
 
       EnumDef.fromQuery("MagnitudeBand", "magnitude band") {
-        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("center")-> Wavelength.Nm, Symbol("width")-> Int, Symbol("magnitudeSystem")-> MagnitudeSystem`.T
+        type R = Record.`Symbol("tag")-> String, Symbol("shortName")-> String, Symbol("longName")-> String, Symbol("center")-> Wavelength.Nm, Symbol("width")-> Quantity.Nm, Symbol("magnitudeSystem")-> MagnitudeSystem`.T
         sql"""SELECT id, id tag, short_name, long_name, center, width, default_system FROM e_magnitude_band""".query[(String, R)]
       },
 

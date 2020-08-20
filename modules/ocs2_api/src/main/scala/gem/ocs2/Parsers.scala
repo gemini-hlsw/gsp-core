@@ -33,7 +33,7 @@ object Parsers {
     double.map(Angle.fromDoubleArcseconds)
 
   val angstroms: PioParse[Wavelength] =
-    int.map(n => Wavelength.fromAngstroms.unsafeGet(n))
+    int.map(n => Wavelength.fromAngstrom(n).get)
 
   val magnitudeSystem: PioParse[MagnitudeSystem] =
     enumFromTag(MagnitudeSystem.all)
@@ -322,7 +322,7 @@ object Parsers {
     )
 
     val disperserLambda: PioParse[Wavelength] =
-      double.map(d => Wavelength.fromAngstroms.unsafeGet((d * 10.0).round.toInt))
+      double.map(d => Wavelength.fromAngstrom((d * 10.0).round.toInt).get)
 
     val dtax: PioParse[GmosDtax] = enum(
       "-6" -> GmosDtax.MinusSix,
@@ -667,14 +667,14 @@ object Parsers {
 
     }
 
-    val centralWavelength: PioParse[Wavelength] = {
+    val centralWavelength: PioParse[Wavelength] =
       bigDecimal.map(w =>
-        Wavelength.fromAngstroms.unsafeGet(
-          w.underlying.movePointRight(4).intValue
-        )
+        Wavelength
+          .fromAngstrom(
+            w.underlying.movePointRight(4).intValue
+          )
+          .get
       )
-    }
-
 
     val wellDepth: PioParse[GnirsWellDepth] = {
 

@@ -498,7 +498,7 @@ object DynamicConfig {
       Right(GnirsFpuSlit.LongSlit_0_30),
       GnirsPrism.Mirror,
       GnirsReadMode.Bright,
-      Wavelength.fromAngstroms.unsafeGet(22000)
+      Wavelength.fromAngstrom(22000).get
     )
 
     implicit val EqGnirs: Eq[Gnirs] =
