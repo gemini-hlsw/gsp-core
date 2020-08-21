@@ -8,5 +8,5 @@ addSbtPlugin("org.portable-scala"    % "sbt-scalajs-crossproject" % "1.0.0")
 addSbtPlugin("com.timushev.sbt"      % "sbt-updates"              % "0.5.1")
 
 libraryDependencies ++= Seq(
-  "org.postgresql" % "postgresql"  % "42.2.15", // needed by flyway
+  "org.postgresql" % "postgresql"  % "42.2.16", // needed by flyway
 )
