@@ -1,6 +1,6 @@
 resolvers += Resolver.sonatypeRepo("public")
 
-addSbtPlugin("io.github.davidmweber" % "flyway-sbt"               % "6.5.0")
+addSbtPlugin("io.github.davidmweber" % "flyway-sbt"               % "7.4.0")
 addSbtPlugin("edu.gemini"            % "sbt-gsp"                  % "0.2.5")
 addSbtPlugin("com.geirsson"          % "sbt-ci-release"           % "1.5.3")
 addSbtPlugin("org.scala-js"          % "sbt-scalajs"              % "1.1.1")
