@@ -1,7 +1,7 @@
 import sbtcrossproject.crossProject
 import sbtcrossproject.CrossType
 
-lazy val doobieVersion               = "0.8.6"
+lazy val doobieVersion               = "0.8.8"
 lazy val catsVersion                 = "2.1.1"
 lazy val catsTestkitScalaTestVersion = "1.0.1"
 lazy val fs2Version                  = "2.4.4"
